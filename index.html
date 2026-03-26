@@ -3,321 +3,413 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SixTierList | MC PvP Rankings</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Enhanced UI Creator</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Pacifico&family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
     <style>
         :root {
-            --bg-color: #0d0000;
-            --panel-bg: #1a0505;
-            --border-color: #330a0a;
-            --red-glow: 0 0 15px rgba(255, 0, 0, 0.5);
-            --red-accent: #ff1a1a;
-            --red-dark: #990000;
-            --text-main: #f2f2f2;
-            --text-muted: #aaaaaa;
+            --bg-color: #0f0f13;
+            --panel-bg: rgba(30, 30, 40, 0.7);
+            --accent: #6c5ce7;
+            --text: #ffffff;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
 
         body {
+            display: flex;
+            height: 100vh;
             background-color: var(--bg-color);
-            color: var(--text-main);
-            background-image: radial-gradient(circle at 50% 0%, #330000 0%, transparent 50%);
-            min-height: 100vh;
-        }
-
-        /* Header Styles */
-        header {
-            text-align: center;
-            padding: 40px 20px 20px;
-        }
-
-        h1 {
-            font-size: 3rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: white;
-            text-shadow: 0 0 20px var(--red-accent), 0 0 40px var(--red-dark);
-            margin-bottom: 10px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        /* Mode Selector */
-        .mode-selector {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
-
-        .mode-btn {
-            background-color: var(--panel-bg);
-            color: var(--text-main);
-            border: 2px solid var(--border-color);
-            padding: 10px 25px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-
-        .mode-btn:hover {
-            border-color: var(--red-accent);
-            box-shadow: var(--red-glow);
-            transform: translateY(-2px);
-        }
-
-        .mode-btn.active {
-            background-color: var(--red-dark);
-            border-color: var(--red-accent);
-            box-shadow: var(--red-glow);
-        }
-
-        /* Tier List Container */
-        .tier-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: var(--panel-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
+            color: var(--text);
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .tier-row {
-            display: flex;
-            border-bottom: 2px solid var(--border-color);
-            min-height: 100px;
-            background-color: #110202;
-        }
-
-        .tier-row:last-child {
-            border-bottom: none;
-        }
-
-        .tier-label {
-            width: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 1.5rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            border-right: 2px solid var(--border-color);
-            flex-shrink: 0;
-        }
-
-        .tier-players {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            padding: 15px;
-            flex-grow: 1;
-        }
-
-        /* Player Cards */
-        .player-card {
+        /* Sidebar Controls */
+        #sidebar {
+            width: 320px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 10;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: var(--text-main);
-            transition: all 0.2s ease;
-            cursor: pointer;
-            width: 80px;
+            gap: 15px;
         }
 
-        .player-card:hover {
-            transform: scale(1.1);
-            z-index: 10;
+        h2 { font-size: 1.2rem; margin-bottom: 10px; color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
+
+        .control-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+        label { font-size: 0.85rem; color: #ccc; }
+        
+        input[type="text"], select, input[type="number"] {
+            width: 100%; padding: 8px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+            color: white; border-radius: 5px; outline: none;
+        }
+        
+        input[type="range"] { width: 100%; accent-color: var(--accent); }
+        
+        .color-row { display: flex; gap: 10px; align-items: center; }
+        input[type="color"] {
+            width: 40px; height: 30px; border: none; background: none; cursor: pointer;
         }
 
-        .player-card img {
-            width: 64px;
-            height: 64px;
-            border-radius: 8px;
-            border: 2px solid #333;
-            transition: border-color 0.2s;
-            background-color: #222; /* Placeholder while loading */
+        button {
+            background: var(--accent); color: white; border: none; padding: 10px; border-radius: 5px;
+            cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        button:hover { background: #5a4bcf; }
+        button.danger { background: #ff4757; }
+        button.danger:hover { background: #ff2a3d; }
+
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* Workspace & Particles */
+        #workspace-container {
+            flex-grow: 1; position: relative;
+        }
+        #particles-js {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+        }
+        #canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden;
         }
 
-        .player-card:hover img {
-            border-color: var(--red-accent);
-            box-shadow: 0 0 15px var(--red-accent);
+        /* Generated UI Elements */
+        .ui-element {
+            position: absolute;
+            min-width: 50px; min-height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: grab;
+            user-select: none;
+            box-sizing: border-box;
+        }
+        
+        .ui-element.selected {
+            outline: 2px dashed #00d2d3 !important;
+            outline-offset: 4px;
         }
 
-        .player-name {
-            margin-top: 8px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-align: center;
-            word-break: break-all;
-            background: rgba(0,0,0,0.7);
-            padding: 2px 6px;
-            border-radius: 4px;
+        /* Resize Handle */
+        .resize-handle {
+            position: absolute; right: 0; bottom: 0; width: 15px; height: 15px;
+            background: linear-gradient(135deg, transparent 50%, var(--accent) 50%);
+            cursor: se-resize; opacity: 0; transition: opacity 0.2s;
         }
+        .ui-element.selected .resize-handle, .ui-element:hover .resize-handle {
+            opacity: 1;
+        }
+
+        /* Hide properties panel initially */
+        #properties-panel { display: none; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>SixTierList</h1>
-        <p>The Ultimate Enhanced Minecraft PvP Hierarchy</p>
-    </header>
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+        <h2>🛠 Add Elements</h2>
+        <div class="btn-grid">
+            <button onclick="addElement('div')">Add Box</button>
+            <button onclick="addElement('button')">Add Button</button>
+            <button onclick="addElement('text')">Add Text</button>
+        </div>
 
-    <div class="mode-selector" id="mode-selector">
-        <!-- Buttons generated by JS -->
+        <div id="properties-panel">
+            <h2>🎨 Properties</h2>
+            
+            <div class="control-group">
+                <label>Inner Text</label>
+                <input type="text" id="prop-text" oninput="updateStyle('innerText', this.value)">
+            </div>
+
+            <div class="control-group">
+                <label>Background (Solid / Gradient)</label>
+                <div class="color-row">
+                    <input type="color" id="prop-bg1" value="#3498db" onchange="updateBackground()">
+                    <input type="color" id="prop-bg2" value="#9b59b6" onchange="updateBackground()">
+                    <select id="prop-bg-type" onchange="updateBackground()">
+                        <option value="solid">Solid (Color 1)</option>
+                        <option value="gradient">Gradient</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>Smooth Edges (Border Radius)</label>
+                <input type="range" id="prop-radius" min="0" max="100" value="0" oninput="updateStyle('borderRadius', this.value + 'px')">
+            </div>
+
+            <div class="control-group">
+                <label>Outline / Border</label>
+                <div class="color-row">
+                    <input type="color" id="prop-border-color" value="#ffffff" onchange="updateBorder()">
+                    <input type="range" id="prop-border-width" min="0" max="20" value="0" oninput="updateBorder()">
+                </div>
+            </div>
+
+            <h2>🔤 Typography</h2>
+            <div class="control-group">
+                <label>Font Family</label>
+                <select id="prop-font" onchange="updateStyle('fontFamily', this.value)">
+                    <option value="'Roboto', sans-serif">Roboto</option>
+                    <option value="'Montserrat', sans-serif">Montserrat</option>
+                    <option value="'Pacifico', cursive">Pacifico</option>
+                    <option value="'Press Start 2P', cursive">Retro Pixel</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Text Color</label>
+                <input type="color" id="prop-color" value="#ffffff" onchange="updateStyle('color', this.value)">
+            </div>
+
+            <div class="control-group">
+                <label>Text Size</label>
+                <input type="range" id="prop-font-size" min="10" max="100" value="16" oninput="updateStyle('fontSize', this.value + 'px')">
+            </div>
+
+            <div class="control-group">
+                <label>Text Effects</label>
+                <select id="prop-text-effect" onchange="applyTextEffect(this.value)">
+                    <option value="none">None</option>
+                    <option value="shadow">Drop Shadow</option>
+                    <option value="neon">Neon Glow</option>
+                </select>
+            </div>
+
+            <button class="danger" style="margin-top: 15px; width: 100%;" onclick="deleteSelected()">Trash Element</button>
+        </div>
     </div>
 
-    <div class="tier-container" id="tier-container">
-        <!-- Tiers generated by JS -->
+    <!-- WORKSPACE -->
+    <div id="workspace-container">
+        <div id="particles-js"></div>
+        <div id="canvas" onclick="deselectElement(event)">
+            <!-- Elements will be injected here -->
+        </div>
     </div>
 
     <script>
-        // Tier Hierarchy & Colors
-        const tiers = [
-            { id: 'HT1', color: '#ff0000' }, // Pure Red
-            { id: 'LT1', color: '#e60000' },
-            { id: 'HT2', color: '#cc0000' },
-            { id: 'LT2', color: '#b30000' },
-            { id: 'HT3', color: '#990000' },
-            { id: 'LT3', color: '#800000' },
-            { id: 'HT4', color: '#660000' },
-            { id: 'LT4', color: '#4d0000' },
-            { id: 'HT5', color: '#330000' },
-            { id: 'LT5', color: '#220000' }  // Darkest Red
-        ];
-
-        // Database of Players (Add real Minecraft Usernames here)
-        const db = {
-            "Mace PvP": {
-                "HT1": ["ClownPierce", "minemanner"],
-                "LT1": ["Odo"],
-                "HT2": ["Technoblade"],
-                "LT5": ["Grian"]
+        // --- PARTICLES.JS INITIALIZATION ---
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: "#6c5ce7" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: "#6c5ce7", opacity: 0.2, width: 1 },
+                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
             },
-            "Sword PvP": {
-                "HT1": ["Stimpy", "Tryhard"],
-                "LT1": ["Gamerboy80"],
-                "HT3": ["Dream"]
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { grab: { distance: 140, line_linked: { opacity: 1 } }, push: { particles_nb: 4 } }
             },
-            "SMP": {
-                "HT1": ["Rekrap2", "Branzy"],
-                "LT1": ["ParrotX2"],
-                "HT2": ["Spoke"]
-            },
-            "Crystal PvP": {
-                "HT1": ["Itz_Iq", "Marloww"],
-                "LT2": ["Ruler"],
-                "LT4": ["Rasplin"]
-            },
-            "Elytra PvP": {
-                "HT1": ["WadZee"],
-                "LT1": ["Sandiction"]
-            }
-        };
+            retina_detect: true
+        });
 
-        const modes = Object.keys(db);
-        let currentMode = modes[0];
+        // --- UI CREATOR LOGIC ---
+        const canvas = document.getElementById('canvas');
+        const propertiesPanel = document.getElementById('properties-panel');
+        let selectedEl = null;
 
-        // Initialize Page
-        function init() {
-            renderButtons();
-            renderTiers();
-        }
-
-        // Render Mode Buttons
-        function renderButtons() {
-            const container = document.getElementById('mode-selector');
-            container.innerHTML = '';
+        // Add New Element
+        function addElement(type) {
+            const el = document.createElement(type === 'text' ? 'div' : type);
+            el.className = 'ui-element';
             
-            modes.forEach(mode => {
-                const btn = document.createElement('button');
-                btn.className = `mode-btn ${mode === currentMode ? 'active' : ''}`;
-                btn.innerText = mode;
-                btn.onclick = () => {
-                    currentMode = mode;
-                    renderButtons();
-                    renderTiers();
-                };
-                container.appendChild(btn);
-            });
+            // Default Styles
+            el.style.top = '100px';
+            el.style.left = '100px';
+            el.style.color = '#ffffff';
+            el.style.fontFamily = "'Roboto', sans-serif";
+            el.style.fontSize = '16px';
+            
+            if (type === 'div') {
+                el.style.width = '150px';
+                el.style.height = '150px';
+                el.style.background = '#3498db';
+                el.innerText = 'New Box';
+            } else if (type === 'button') {
+                el.style.padding = '10px 20px';
+                el.style.background = '#6c5ce7';
+                el.style.border = 'none';
+                el.style.borderRadius = '5px';
+                el.style.cursor = 'pointer';
+                el.innerText = 'Click Me';
+            } else if (type === 'text') {
+                el.style.fontSize = '32px';
+                el.style.fontWeight = 'bold';
+                el.innerText = 'Editable Text';
+            }
+
+            // Add Resize Handle
+            const handle = document.createElement('div');
+            handle.className = 'resize-handle';
+            el.appendChild(handle);
+
+            // Event Listeners for Interaction
+            el.addEventListener('mousedown', initDrag);
+            handle.addEventListener('mousedown', initResize);
+            el.addEventListener('click', selectElement);
+
+            canvas.appendChild(el);
+            selectElement({ target: el, stopPropagation: () => {} });
         }
 
-        // Render the Tier List Board
-        function renderTiers() {
-            const container = document.getElementById('tier-container');
-            container.innerHTML = '';
+        // Selection Logic
+        function selectElement(e) {
+            e.stopPropagation();
+            if (e.target.classList.contains('resize-handle')) return;
+            
+            if (selectedEl) selectedEl.classList.remove('selected');
+            selectedEl = e.target.closest('.ui-element');
+            selectedEl.classList.add('selected');
+            
+            propertiesPanel.style.display = 'flex';
+            loadProperties();
+        }
 
-            const modeData = db[currentMode];
+        function deselectElement(e) {
+            if (e.target === canvas) {
+                if (selectedEl) selectedEl.classList.remove('selected');
+                selectedEl = null;
+                propertiesPanel.style.display = 'none';
+            }
+        }
 
-            tiers.forEach(tier => {
-                const row = document.createElement('div');
-                row.className = 'tier-row';
+        // Delete Element
+        function deleteSelected() {
+            if (selectedEl) {
+                selectedEl.remove();
+                selectedEl = null;
+                propertiesPanel.style.display = 'none';
+            }
+        }
 
-                // Label
-                const label = document.createElement('div');
-                label.className = 'tier-label';
-                label.style.backgroundColor = tier.color;
-                label.innerText = tier.id;
-                
-                // Adjust text color for contrast on darker reds
-                if(['HT4', 'LT4', 'HT5', 'LT5'].includes(tier.id)) {
-                    label.style.color = '#ff6666';
-                } else {
-                    label.style.color = '#ffffff';
-                }
+        // Load Properties into Sidebar
+        function loadProperties() {
+            if (!selectedEl) return;
+            
+            // Filter out the resize handle text
+            let textNode = Array.from(selectedEl.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
+            document.getElementById('prop-text').value = textNode ? textNode.nodeValue : '';
+            
+            const styles = window.getComputedStyle(selectedEl);
+            document.getElementById('prop-radius').value = parseInt(styles.borderRadius) || 0;
+            document.getElementById('prop-border-width').value = parseInt(styles.borderWidth) || 0;
+            document.getElementById('prop-font-size').value = parseInt(styles.fontSize) || 16;
+        }
 
-                // Players Container
-                const playersDiv = document.createElement('div');
-                playersDiv.className = 'tier-players';
-
-                // Add Players
-                const playersInTier = modeData[tier.id] || [];
-                playersInTier.forEach(username => {
-                    // Create Player Card (Links to NameMC)
-                    const card = document.createElement('a');
-                    card.className = 'player-card';
-                    card.href = `https://namemc.com/profile/${username}`;
-                    card.target = "_blank";
-                    card.title = `View ${username} on NameMC`;
-
-                    // Fetch 3D Head from Minotar API
-                    const img = document.createElement('img');
-                    img.src = `https://minotar.net/helm/${username}/64.png`;
-                    img.alt = username;
-                    img.loading = "lazy";
-
-                    const nameLabel = document.createElement('div');
-                    nameLabel.className = 'player-name';
-                    nameLabel.innerText = username;
-
-                    card.appendChild(img);
-                    card.appendChild(nameLabel);
-                    playersDiv.appendChild(card);
+        // --- STYLE UPDATERS ---
+        function updateStyle(prop, value) {
+            if (!selectedEl) return;
+            if (prop === 'innerText') {
+                // Keep the resize handle, update text
+                Array.from(selectedEl.childNodes).forEach(n => {
+                    if(n.nodeType === Node.TEXT_NODE) n.nodeValue = value;
                 });
-
-                row.appendChild(label);
-                row.appendChild(playersDiv);
-                container.appendChild(row);
-            });
+                if(!Array.from(selectedEl.childNodes).some(n => n.nodeType === Node.TEXT_NODE)) {
+                    selectedEl.prepend(document.createTextNode(value));
+                }
+            } else {
+                selectedEl.style[prop] = value;
+            }
         }
 
-        // Run the initialization
-        init();
+        function updateBackground() {
+            if (!selectedEl) return;
+            const c1 = document.getElementById('prop-bg1').value;
+            const c2 = document.getElementById('prop-bg2').value;
+            const type = document.getElementById('prop-bg-type').value;
+
+            if (type === 'solid') {
+                selectedEl.style.background = c1;
+            } else {
+                selectedEl.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+            }
+        }
+
+        function updateBorder() {
+            if (!selectedEl) return;
+            const color = document.getElementById('prop-border-color').value;
+            const width = document.getElementById('prop-border-width').value;
+            selectedEl.style.border = `${width}px solid ${color}`;
+        }
+
+        function applyTextEffect(type) {
+            if (!selectedEl) return;
+            const color = window.getComputedStyle(selectedEl).color;
+            if (type === 'none') selectedEl.style.textShadow = 'none';
+            if (type === 'shadow') selectedEl.style.textShadow = `3px 3px 5px rgba(0,0,0,0.8)`;
+            if (type === 'neon') selectedEl.style.textShadow = `0 0 5px ${color}, 0 0 10px ${color}, 0 0 20px ${color}`;
+        }
+
+        // --- DRAG AND DROP LOGIC ---
+        let isDragging = false;
+        let isResizing = false;
+        let startX, startY, startW, startH, startTop, startLeft;
+
+        function initDrag(e) {
+            if (e.target.classList.contains('resize-handle')) return;
+            isDragging = true;
+            selectedEl = e.target.closest('.ui-element');
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = parseInt(window.getComputedStyle(selectedEl).left) || 0;
+            startTop = parseInt(window.getComputedStyle(selectedEl).top) || 0;
+            
+            document.addEventListener('mousemove', doDrag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function doDrag(e) {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            selectedEl.style.left = startLeft + dx + 'px';
+            selectedEl.style.top = startTop + dy + 'px';
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', doDrag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        // --- RESIZE LOGIC ---
+        function initResize(e) {
+            e.stopPropagation();
+            isResizing = true;
+            selectedEl = e.target.closest('.ui-element');
+            startX = e.clientX;
+            startY = e.clientY;
+            startW = parseInt(window.getComputedStyle(selectedEl).width) || 0;
+            startH = parseInt(window.getComputedStyle(selectedEl).height) || 0;
+
+            document.addEventListener('mousemove', doResize);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        function doResize(e) {
+            if (!isResizing) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            selectedEl.style.width = startW + dx + 'px';
+            selectedEl.style.height = startH + dy + 'px';
+        }
+
+        function stopResize() {
+            isResizing = false;
+            document.removeEventListener('mousemove', doResize);
+            document.removeEventListener('mouseup', stopResize);
+        }
     </script>
 </body>
 </html>
