@@ -3,267 +3,477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced UI Creator</title>
+    <title>UI Builder</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Pacifico&family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Particles.js -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@400;700&family=Pacifico&family=Press+Start+2P&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #0f0f13;
-            --panel-bg: rgba(30, 30, 40, 0.7);
-            --accent: #6c5ce7;
-            --text: #ffffff;
+            --bg-main: #18181b;
+            --bg-panel: #27272a;
+            --bg-input: #3f3f46;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: #3f3f46;
+            --canvas-bg: #1e1e24;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Inter', sans-serif; 
+        }
 
         body {
             display: flex;
+            flex-direction: column;
             height: 100vh;
-            background-color: var(--bg-color);
-            color: var(--text);
+            background-color: var(--bg-main);
+            color: var(--text-main);
             overflow: hidden;
         }
 
-        /* Sidebar Controls */
-        #sidebar {
-            width: 320px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(15px);
-            border-right: 1px solid rgba(255,255,255,0.1);
-            padding: 20px;
-            overflow-y: auto;
-            z-index: 10;
+        /* Top Navbar */
+        .topbar {
+            height: 50px;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 10;
+        }
+
+        .brand {
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .topbar-controls {
+            display: flex;
+            align-items: center;
             gap: 15px;
         }
 
-        h2 { font-size: 1.2rem; margin-bottom: 10px; color: var(--accent); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
+        /* Layout Structure */
+        .workspace {
+            display: flex;
+            flex-grow: 1;
+            height: calc(100vh - 50px);
+        }
 
-        .control-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
-        label { font-size: 0.85rem; color: #ccc; }
-        
-        input[type="text"], select, input[type="number"] {
-            width: 100%; padding: 8px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
-            color: white; border-radius: 5px; outline: none;
+        /* Sidebars */
+        .sidebar {
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-left {
+            width: 260px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar-right {
+            width: 300px;
+            border-left: 1px solid var(--border-color);
+            border-right: none;
+            display: none; /* Hidden until selection */
+        }
+
+        .sidebar-right.active {
+            display: flex;
+        }
+
+        .empty-state {
+            width: 300px;
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-panel);
+        }
+
+        /* Typography & Grouping */
+        h2 { 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: var(--text-muted); 
+            margin-bottom: 10px;
+        }
+
+        .panel-section {
+            background: rgba(0,0,0,0.15);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .control-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 6px; 
+            margin-bottom: 12px; 
         }
         
-        input[type="range"] { width: 100%; accent-color: var(--accent); }
+        .control-group:last-child { margin-bottom: 0; }
+
+        label { 
+            font-size: 0.8rem; 
+            color: var(--text-main); 
+        }
+
+        /* Inputs & Buttons */
+        input[type="text"], select, input[type="number"] {
+            width: 100%; 
+            padding: 8px 10px; 
+            background: var(--bg-input); 
+            border: 1px solid var(--border-color);
+            color: white; 
+            border-radius: 6px; 
+            outline: none;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--accent);
+        }
         
-        .color-row { display: flex; gap: 10px; align-items: center; }
+        input[type="range"] { 
+            width: 100%; 
+            accent-color: var(--accent); 
+        }
+        
+        .color-row { 
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+        }
+
         input[type="color"] {
-            width: 40px; height: 30px; border: none; background: none; cursor: pointer;
+            width: 35px; 
+            height: 35px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 6px;
+            background: var(--bg-input); 
+            cursor: pointer;
+            padding: 2px;
         }
 
         button {
-            background: var(--accent); color: white; border: none; padding: 10px; border-radius: 5px;
-            cursor: pointer; font-weight: bold; transition: 0.2s;
+            background: var(--accent); 
+            color: white; 
+            border: none; 
+            padding: 10px; 
+            border-radius: 6px;
+            cursor: pointer; 
+            font-weight: 500; 
+            font-size: 0.9rem;
+            transition: 0.2s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        button:hover { background: #5a4bcf; }
-        button.danger { background: #ff4757; }
-        button.danger:hover { background: #ff2a3d; }
 
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button:hover { background: var(--accent-hover); }
+        
+        button.secondary {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+        }
+        button.secondary:hover { background: #52525b; }
 
-        /* Workspace & Particles */
-        #workspace-container {
-            flex-grow: 1; position: relative;
+        button.danger { background: #ef4444; }
+        button.danger:hover { background: #dc2626; }
+
+        .btn-grid { 
+            display: flex;
+            flex-direction: column;
+            gap: 10px; 
         }
-        #particles-js {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+
+        /* Canvas Area */
+        #canvas-wrapper {
+            flex-grow: 1; 
+            position: relative;
+            background-color: var(--canvas-bg);
+            /* Design Grid Pattern */
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow: auto;
         }
+
         #canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden;
+            width: 100%; 
+            height: 100%; 
+            position: absolute; 
+            top: 0; 
+            left: 0;
         }
 
         /* Generated UI Elements */
         .ui-element {
             position: absolute;
-            min-width: 50px; min-height: 30px;
-            display: flex; align-items: center; justify-content: center;
+            min-width: 50px; 
+            min-height: 30px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
             cursor: grab;
             user-select: none;
             box-sizing: border-box;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
+        .ui-element:active { cursor: grabbing; }
         
         .ui-element.selected {
-            outline: 2px dashed #00d2d3 !important;
-            outline-offset: 4px;
+            outline: 2px solid var(--accent) !important;
+            outline-offset: 2px;
+        }
+
+        .text-content {
+            pointer-events: none; /* Let the parent handle dragging */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Resize Handle */
         .resize-handle {
-            position: absolute; right: 0; bottom: 0; width: 15px; height: 15px;
-            background: linear-gradient(135deg, transparent 50%, var(--accent) 50%);
-            cursor: se-resize; opacity: 0; transition: opacity 0.2s;
-        }
-        .ui-element.selected .resize-handle, .ui-element:hover .resize-handle {
-            opacity: 1;
+            position: absolute; 
+            right: -4px; 
+            bottom: -4px; 
+            width: 12px; 
+            height: 12px;
+            background: var(--text-main);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            cursor: se-resize; 
+            opacity: 0; 
+            transition: opacity 0.2s;
+            z-index: 10;
         }
 
-        /* Hide properties panel initially */
-        #properties-panel { display: none; }
+        .ui-element.selected .resize-handle { opacity: 1; }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #52525b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #71717a; }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <div id="sidebar">
-        <h2>🛠 Add Elements</h2>
-        <div class="btn-grid">
-            <button onclick="addElement('div')">Add Box</button>
-            <button onclick="addElement('button')">Add Button</button>
-            <button onclick="addElement('text')">Add Text</button>
+    <!-- TOP NAVBAR -->
+    <div class="topbar">
+        <div class="brand">UI Builder</div>
+        <div class="topbar-controls">
+            <label style="margin: 0; color: var(--text-muted);">Canvas Background</label>
+            <input type="color" id="canvas-bg-color" value="#1e1e24" onchange="updateCanvasBg(this.value)">
+            <button class="secondary" style="width: auto; padding: 6px 12px;" onclick="clearCanvas()">Clear Canvas</button>
+        </div>
+    </div>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="workspace">
+        
+        <!-- LEFT SIDEBAR: TOOLS -->
+        <aside class="sidebar sidebar-left">
+            <div class="panel-section">
+                <h2>Insert Elements</h2>
+                <div class="btn-grid">
+                    <button class="secondary" onclick="addElement('div')">Add Container</button>
+                    <button class="secondary" onclick="addElement('button')">Add Button</button>
+                    <button class="secondary" onclick="addElement('text')">Add Text</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER: CANVAS -->
+        <main id="canvas-wrapper" onclick="deselectElement(event)">
+            <div id="canvas">
+                <!-- Elements injected here -->
+            </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR: EMPTY STATE -->
+        <div class="empty-state" id="empty-state">
+            <p>Select an element to edit its properties.</p>
         </div>
 
-        <div id="properties-panel">
-            <h2>🎨 Properties</h2>
+        <!-- RIGHT SIDEBAR: PROPERTIES -->
+        <aside class="sidebar sidebar-right" id="properties-panel">
             
-            <div class="control-group">
-                <label>Inner Text</label>
-                <input type="text" id="prop-text" oninput="updateStyle('innerText', this.value)">
+            <div class="panel-section">
+                <h2>Content</h2>
+                <div class="control-group">
+                    <label>Text / Label</label>
+                    <input type="text" id="prop-text" oninput="updateText(this.value)">
+                </div>
             </div>
 
-            <div class="control-group">
-                <label>Background (Solid / Gradient)</label>
-                <div class="color-row">
-                    <input type="color" id="prop-bg1" value="#3498db" onchange="updateBackground()">
-                    <input type="color" id="prop-bg2" value="#9b59b6" onchange="updateBackground()">
-                    <select id="prop-bg-type" onchange="updateBackground()">
-                        <option value="solid">Solid (Color 1)</option>
-                        <option value="gradient">Gradient</option>
+            <div class="panel-section">
+                <h2>Appearance</h2>
+                <div class="control-group">
+                    <label>Background</label>
+                    <div class="color-row">
+                        <input type="color" id="prop-bg1" value="#3b82f6" onchange="updateBackground()">
+                        <input type="color" id="prop-bg2" value="#8b5cf6" onchange="updateBackground()">
+                        <select id="prop-bg-type" onchange="updateBackground()">
+                            <option value="solid">Solid (Left)</option>
+                            <option value="gradient">Gradient</option>
+                            <option value="transparent">Transparent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group" style="margin-top: 10px;">
+                    <label>Corner Radius (<span id="radius-val">0</span>px)</label>
+                    <input type="range" id="prop-radius" min="0" max="100" value="0" oninput="updateStyle('borderRadius', this.value + 'px'); document.getElementById('radius-val').innerText = this.value;">
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h2>Border</h2>
+                <div class="control-group">
+                    <div class="color-row">
+                        <input type="color" id="prop-border-color" value="#ffffff" onchange="updateBorder()">
+                        <input type="range" id="prop-border-width" min="0" max="20" value="0" oninput="updateBorder()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h2>Typography</h2>
+                <div class="control-group">
+                    <label>Font Family</label>
+                    <select id="prop-font" onchange="updateStyle('fontFamily', this.value)">
+                        <option value="'Inter', sans-serif">Inter</option>
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Pacifico', cursive">Pacifico</option>
+                        <option value="'Press Start 2P', cursive">Retro Pixel</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label>Text Color</label>
+                    <input type="color" id="prop-color" value="#ffffff" onchange="updateStyle('color', this.value)">
+                </div>
+
+                <div class="control-group">
+                    <label>Font Size (<span id="font-val">16</span>px)</label>
+                    <input type="range" id="prop-font-size" min="10" max="120" value="16" oninput="updateStyle('fontSize', this.value + 'px'); document.getElementById('font-val').innerText = this.value;">
+                </div>
+
+                <div class="control-group">
+                    <label>Text Effects</label>
+                    <select id="prop-text-effect" onchange="applyTextEffect(this.value)">
+                        <option value="none">None</option>
+                        <option value="shadow">Drop Shadow</option>
+                        <option value="neon">Neon Glow</option>
                     </select>
                 </div>
             </div>
 
-            <div class="control-group">
-                <label>Smooth Edges (Border Radius)</label>
-                <input type="range" id="prop-radius" min="0" max="100" value="0" oninput="updateStyle('borderRadius', this.value + 'px')">
-            </div>
+            <button class="danger" onclick="deleteSelected()">Delete Element</button>
+        </aside>
 
-            <div class="control-group">
-                <label>Outline / Border</label>
-                <div class="color-row">
-                    <input type="color" id="prop-border-color" value="#ffffff" onchange="updateBorder()">
-                    <input type="range" id="prop-border-width" min="0" max="20" value="0" oninput="updateBorder()">
-                </div>
-            </div>
-
-            <h2>🔤 Typography</h2>
-            <div class="control-group">
-                <label>Font Family</label>
-                <select id="prop-font" onchange="updateStyle('fontFamily', this.value)">
-                    <option value="'Roboto', sans-serif">Roboto</option>
-                    <option value="'Montserrat', sans-serif">Montserrat</option>
-                    <option value="'Pacifico', cursive">Pacifico</option>
-                    <option value="'Press Start 2P', cursive">Retro Pixel</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <label>Text Color</label>
-                <input type="color" id="prop-color" value="#ffffff" onchange="updateStyle('color', this.value)">
-            </div>
-
-            <div class="control-group">
-                <label>Text Size</label>
-                <input type="range" id="prop-font-size" min="10" max="100" value="16" oninput="updateStyle('fontSize', this.value + 'px')">
-            </div>
-
-            <div class="control-group">
-                <label>Text Effects</label>
-                <select id="prop-text-effect" onchange="applyTextEffect(this.value)">
-                    <option value="none">None</option>
-                    <option value="shadow">Drop Shadow</option>
-                    <option value="neon">Neon Glow</option>
-                </select>
-            </div>
-
-            <button class="danger" style="margin-top: 15px; width: 100%;" onclick="deleteSelected()">Trash Element</button>
-        </div>
-    </div>
-
-    <!-- WORKSPACE -->
-    <div id="workspace-container">
-        <div id="particles-js"></div>
-        <div id="canvas" onclick="deselectElement(event)">
-            <!-- Elements will be injected here -->
-        </div>
     </div>
 
     <script>
-        // --- PARTICLES.JS INITIALIZATION ---
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 60, density: { enable: true, value_area: 800 } },
-                color: { value: "#6c5ce7" },
-                shape: { type: "circle" },
-                opacity: { value: 0.5, random: true },
-                size: { value: 3, random: true },
-                line_linked: { enable: true, distance: 150, color: "#6c5ce7", opacity: 0.2, width: 1 },
-                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
-            },
-            interactivity: {
-                detect_on: "canvas",
-                events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true },
-                modes: { grab: { distance: 140, line_linked: { opacity: 1 } }, push: { particles_nb: 4 } }
-            },
-            retina_detect: true
-        });
-
-        // --- UI CREATOR LOGIC ---
         const canvas = document.getElementById('canvas');
+        const canvasWrapper = document.getElementById('canvas-wrapper');
         const propertiesPanel = document.getElementById('properties-panel');
+        const emptyState = document.getElementById('empty-state');
         let selectedEl = null;
 
-        // Add New Element
+        // --- GLOBAL CANVAS ACTIONS ---
+        function updateCanvasBg(color) {
+            canvasWrapper.style.backgroundColor = color;
+        }
+
+        function clearCanvas() {
+            if(confirm("Are you sure you want to clear the canvas?")) {
+                canvas.innerHTML = '';
+                deselectElement({ target: canvasWrapper });
+            }
+        }
+
+        // --- ADD ELEMENTS ---
         function addElement(type) {
             const el = document.createElement(type === 'text' ? 'div' : type);
             el.className = 'ui-element';
+            
+            // Text Container inside Element
+            const textSpan = document.createElement('span');
+            textSpan.className = 'text-content';
             
             // Default Styles
             el.style.top = '100px';
             el.style.left = '100px';
             el.style.color = '#ffffff';
-            el.style.fontFamily = "'Roboto', sans-serif";
+            el.style.fontFamily = "'Inter', sans-serif";
             el.style.fontSize = '16px';
             
             if (type === 'div') {
                 el.style.width = '150px';
                 el.style.height = '150px';
-                el.style.background = '#3498db';
-                el.innerText = 'New Box';
+                el.style.background = '#3b82f6';
+                textSpan.innerText = 'Container';
             } else if (type === 'button') {
-                el.style.padding = '10px 20px';
-                el.style.background = '#6c5ce7';
+                el.style.width = '120px';
+                el.style.height = '45px';
+                el.style.background = '#8b5cf6';
                 el.style.border = 'none';
-                el.style.borderRadius = '5px';
-                el.style.cursor = 'pointer';
-                el.innerText = 'Click Me';
+                el.style.borderRadius = '6px';
+                textSpan.innerText = 'Click Me';
             } else if (type === 'text') {
+                el.style.width = 'auto';
+                el.style.height = 'auto';
                 el.style.fontSize = '32px';
                 el.style.fontWeight = 'bold';
-                el.innerText = 'Editable Text';
+                textSpan.innerText = 'Double Click to Edit';
             }
 
-            // Add Resize Handle
+            // Resize Handle
             const handle = document.createElement('div');
             handle.className = 'resize-handle';
+            
+            // Append structures
+            el.appendChild(textSpan);
             el.appendChild(handle);
+            canvas.appendChild(el);
 
-            // Event Listeners for Interaction
+            // Event Listeners
             el.addEventListener('mousedown', initDrag);
             handle.addEventListener('mousedown', initResize);
             el.addEventListener('click', selectElement);
 
-            canvas.appendChild(el);
+            // Auto select new element
             selectElement({ target: el, stopPropagation: () => {} });
         }
 
-        // Selection Logic
+        // --- SELECTION LOGIC ---
         function selectElement(e) {
             e.stopPropagation();
             if (e.target.classList.contains('resize-handle')) return;
@@ -272,55 +482,60 @@
             selectedEl = e.target.closest('.ui-element');
             selectedEl.classList.add('selected');
             
-            propertiesPanel.style.display = 'flex';
+            // Toggle sidebars
+            emptyState.style.display = 'none';
+            propertiesPanel.classList.add('active');
+            
             loadProperties();
         }
 
         function deselectElement(e) {
-            if (e.target === canvas) {
+            if (e.target === canvasWrapper || e.target === canvas) {
                 if (selectedEl) selectedEl.classList.remove('selected');
                 selectedEl = null;
-                propertiesPanel.style.display = 'none';
+                
+                // Toggle sidebars
+                propertiesPanel.classList.remove('active');
+                emptyState.style.display = 'flex';
             }
         }
 
-        // Delete Element
         function deleteSelected() {
             if (selectedEl) {
                 selectedEl.remove();
-                selectedEl = null;
-                propertiesPanel.style.display = 'none';
+                deselectElement({ target: canvasWrapper });
             }
         }
 
-        // Load Properties into Sidebar
+        // --- PROPERTY BINDING ---
         function loadProperties() {
             if (!selectedEl) return;
             
-            // Filter out the resize handle text
-            let textNode = Array.from(selectedEl.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
-            document.getElementById('prop-text').value = textNode ? textNode.nodeValue : '';
+            const textSpan = selectedEl.querySelector('.text-content');
+            document.getElementById('prop-text').value = textSpan ? textSpan.innerText : '';
             
             const styles = window.getComputedStyle(selectedEl);
-            document.getElementById('prop-radius').value = parseInt(styles.borderRadius) || 0;
+            
+            const radius = parseInt(styles.borderRadius) || 0;
+            document.getElementById('prop-radius').value = radius;
+            document.getElementById('radius-val').innerText = radius;
+            
             document.getElementById('prop-border-width').value = parseInt(styles.borderWidth) || 0;
-            document.getElementById('prop-font-size').value = parseInt(styles.fontSize) || 16;
+            
+            const fontSize = parseInt(styles.fontSize) || 16;
+            document.getElementById('prop-font-size').value = fontSize;
+            document.getElementById('font-val').innerText = fontSize;
         }
 
-        // --- STYLE UPDATERS ---
+        function updateText(value) {
+            if (!selectedEl) return;
+            const textSpan = selectedEl.querySelector('.text-content');
+            if(textSpan) textSpan.innerText = value;
+        }
+
         function updateStyle(prop, value) {
             if (!selectedEl) return;
-            if (prop === 'innerText') {
-                // Keep the resize handle, update text
-                Array.from(selectedEl.childNodes).forEach(n => {
-                    if(n.nodeType === Node.TEXT_NODE) n.nodeValue = value;
-                });
-                if(!Array.from(selectedEl.childNodes).some(n => n.nodeType === Node.TEXT_NODE)) {
-                    selectedEl.prepend(document.createTextNode(value));
-                }
-            } else {
-                selectedEl.style[prop] = value;
-            }
+            selectedEl.style[prop] = value;
         }
 
         function updateBackground() {
@@ -331,8 +546,10 @@
 
             if (type === 'solid') {
                 selectedEl.style.background = c1;
-            } else {
+            } else if (type === 'gradient') {
                 selectedEl.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+            } else {
+                selectedEl.style.background = 'transparent';
             }
         }
 
@@ -340,21 +557,24 @@
             if (!selectedEl) return;
             const color = document.getElementById('prop-border-color').value;
             const width = document.getElementById('prop-border-width').value;
-            selectedEl.style.border = `${width}px solid ${color}`;
+            if(width > 0) {
+                selectedEl.style.border = `${width}px solid ${color}`;
+            } else {
+                selectedEl.style.border = 'none';
+            }
         }
 
         function applyTextEffect(type) {
             if (!selectedEl) return;
             const color = window.getComputedStyle(selectedEl).color;
             if (type === 'none') selectedEl.style.textShadow = 'none';
-            if (type === 'shadow') selectedEl.style.textShadow = `3px 3px 5px rgba(0,0,0,0.8)`;
-            if (type === 'neon') selectedEl.style.textShadow = `0 0 5px ${color}, 0 0 10px ${color}, 0 0 20px ${color}`;
+            if (type === 'shadow') selectedEl.style.textShadow = `3px 3px 6px rgba(0,0,0,0.6)`;
+            if (type === 'neon') selectedEl.style.textShadow = `0 0 5px ${color}, 0 0 15px ${color}, 0 0 30px ${color}`;
         }
 
-        // --- DRAG AND DROP LOGIC ---
+        // --- DRAG LOGIC ---
         let isDragging = false;
-        let isResizing = false;
-        let startX, startY, startW, startH, startTop, startLeft;
+        let startX, startY, startLeft, startTop;
 
         function initDrag(e) {
             if (e.target.classList.contains('resize-handle')) return;
@@ -384,6 +604,9 @@
         }
 
         // --- RESIZE LOGIC ---
+        let isResizing = false;
+        let startW, startH;
+
         function initResize(e) {
             e.stopPropagation();
             isResizing = true;
@@ -401,8 +624,8 @@
             if (!isResizing) return;
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
-            selectedEl.style.width = startW + dx + 'px';
-            selectedEl.style.height = startH + dy + 'px';
+            selectedEl.style.width = Math.max(20, startW + dx) + 'px'; // Minimum 20px
+            selectedEl.style.height = Math.max(20, startH + dy) + 'px'; // Minimum 20px
         }
 
         function stopResize() {
