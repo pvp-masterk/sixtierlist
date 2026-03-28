@@ -3,332 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UI Builder</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@400;700&family=Pacifico&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Pro UI Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;700&family=Pacifico&family=Press+Start+2P&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-main: #18181b;
-            --bg-panel: #27272a;
-            --bg-input: #3f3f46;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
+            --bg-main: #0f0f11;
+            --bg-panel: #18181b;
+            --bg-surface: #27272a;
+            --bg-input: #1f1f22;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
             --text-main: #f4f4f5;
             --text-muted: #a1a1aa;
             --border-color: #3f3f46;
-            --canvas-bg: #1e1e24;
+            --canvas-bg: #131316;
+            --radius: 8px;
+            --font-main: 'Inter', sans-serif;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Inter', sans-serif; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-main); }
 
         body {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            overflow: hidden;
+            display: flex; flex-direction: column; height: 100vh;
+            background-color: var(--bg-main); color: var(--text-main); overflow: hidden;
         }
 
         /* Top Navbar */
         .topbar {
-            height: 50px;
-            background: var(--bg-panel);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 10;
+            height: 55px; background: var(--bg-panel); border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100;
         }
 
         .brand {
-            font-weight: 600;
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
+            font-weight: 600; font-size: 1.2rem; letter-spacing: 0.5px;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .topbar-controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .topbar-controls { display: flex; align-items: center; gap: 15px; }
 
-        /* Layout Structure */
-        .workspace {
-            display: flex;
-            flex-grow: 1;
-            height: calc(100vh - 50px);
-        }
+        /* Workspace */
+        .workspace { display: flex; flex-grow: 1; height: calc(100vh - 55px); }
 
         /* Sidebars */
         .sidebar {
-            background: var(--bg-panel);
-            border-right: 1px solid var(--border-color);
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            background: var(--bg-panel); padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 24px;
         }
-
-        .sidebar-left {
-            width: 260px;
-            border-right: 1px solid var(--border-color);
-        }
-
-        .sidebar-right {
-            width: 300px;
-            border-left: 1px solid var(--border-color);
-            border-right: none;
-            display: none; /* Hidden until selection */
-        }
-
-        .sidebar-right.active {
-            display: flex;
-        }
+        .sidebar-left { width: 280px; border-right: 1px solid var(--border-color); }
+        .sidebar-right { width: 320px; border-left: 1px solid var(--border-color); display: none; }
+        .sidebar-right.active { display: flex; }
 
         .empty-state {
-            width: 300px;
-            border-left: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            text-align: center;
-            padding: 20px;
-            background: var(--bg-panel);
+            width: 320px; border-left: 1px solid var(--border-color); display: flex;
+            align-items: center; justify-content: center; color: var(--text-muted);
+            text-align: center; padding: 20px; background: var(--bg-panel); flex-direction: column; gap: 10px;
         }
 
         /* Typography & Grouping */
-        h2 { 
-            font-size: 0.85rem; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            color: var(--text-muted); 
-            margin-bottom: 10px;
-        }
-
-        .panel-section {
-            background: rgba(0,0,0,0.15);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .control-group { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 6px; 
-            margin-bottom: 12px; 
-        }
-        
+        h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; }
+        .panel-section { background: var(--bg-surface); padding: 16px; border-radius: var(--radius); border: 1px solid #3f3f4655; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
         .control-group:last-child { margin-bottom: 0; }
-
-        label { 
-            font-size: 0.8rem; 
-            color: var(--text-main); 
-        }
-
-        /* Inputs & Buttons */
-        input[type="text"], select, input[type="number"] {
-            width: 100%; 
-            padding: 8px 10px; 
-            background: var(--bg-input); 
-            border: 1px solid var(--border-color);
-            color: white; 
-            border-radius: 6px; 
-            outline: none;
-            font-size: 0.85rem;
-            transition: 0.2s;
-        }
-
-        input[type="text"]:focus, select:focus {
-            border-color: var(--accent);
-        }
         
-        input[type="range"] { 
-            width: 100%; 
-            accent-color: var(--accent); 
-        }
+        .row { display: flex; gap: 10px; align-items: center; }
+        .row > div { flex: 1; }
         
-        .color-row { 
-            display: flex; 
-            gap: 10px; 
-            align-items: center; 
+        label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; display: flex; justify-content: space-between; }
+        label span.val { color: var(--accent); }
+
+        /* --- CUSTOM CONTROLS --- */
+        input[type="text"], input[type="number"], select {
+            width: 100%; padding: 10px 12px; background: var(--bg-input); border: 1px solid var(--border-color);
+            color: white; border-radius: 6px; outline: none; font-size: 0.85rem; transition: 0.2s;
         }
 
-        input[type="color"] {
-            width: 35px; 
-            height: 35px; 
-            border: 1px solid var(--border-color); 
-            border-radius: 6px;
-            background: var(--bg-input); 
-            cursor: pointer;
-            padding: 2px;
+        input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
+
+        /* Custom Dropdown */
+        select {
+            appearance: none; cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 10px center; background-size: 14px;
         }
 
+        /* Custom Range Slider */
+        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: var(--accent); cursor: pointer; margin-top: -6px; border: 2px solid white;
+        }
+        input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--border-color); border-radius: 2px; }
+
+        /* Custom Color Pickers */
+        .color-picker-wrap {
+            position: relative; width: 100%; height: 38px; border-radius: 6px;
+            border: 1px solid var(--border-color); overflow: hidden; cursor: pointer; display: flex; align-items: center;
+        }
+        .color-swatch { width: 38px; height: 100%; border-right: 1px solid var(--border-color); }
+        .color-hex { padding-left: 10px; font-size: 0.85rem; font-family: monospace; color: var(--text-main); }
+        input[type="color"] { position: absolute; opacity: 0; width: 200%; height: 200%; top: -50%; left: -50%; cursor: pointer; }
+
+        /* Buttons */
         button {
-            background: var(--accent); 
-            color: white; 
-            border: none; 
-            padding: 10px; 
-            border-radius: 6px;
-            cursor: pointer; 
-            font-weight: 500; 
-            font-size: 0.9rem;
-            transition: 0.2s;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            background: var(--accent); color: white; border: none; padding: 10px 16px;
+            border-radius: var(--radius); cursor: pointer; font-weight: 500; font-size: 0.85rem;
+            transition: 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-
-        button:hover { background: var(--accent-hover); }
-        
-        button.secondary {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-        }
-        button.secondary:hover { background: #52525b; }
-
-        button.danger { background: #ef4444; }
-        button.danger:hover { background: #dc2626; }
-
-        .btn-grid { 
-            display: flex;
-            flex-direction: column;
-            gap: 10px; 
-        }
+        button:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        button.secondary { background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); }
+        button.secondary:hover { background: var(--border-color); }
+        button.danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        button.danger:hover { background: #ef4444; color: white; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         /* Canvas Area */
         #canvas-wrapper {
-            flex-grow: 1; 
-            position: relative;
-            background-color: var(--canvas-bg);
-            /* Design Grid Pattern */
-            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-            overflow: auto;
+            flex-grow: 1; position: relative; background-color: var(--canvas-bg);
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px; overflow: auto;
         }
 
-        #canvas {
-            width: 100%; 
-            height: 100%; 
-            position: absolute; 
-            top: 0; 
-            left: 0;
-        }
+        #canvas { width: 3000px; height: 3000px; position: absolute; top: 0; left: 0; transform-origin: 0 0; }
 
-        /* Generated UI Elements */
+        /* UI Elements */
         .ui-element {
-            position: absolute;
-            min-width: 50px; 
-            min-height: 30px;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            cursor: grab;
-            user-select: none;
-            box-sizing: border-box;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: absolute; min-width: 20px; min-height: 20px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: grab; user-select: none; box-sizing: border-box; transition: outline 0.1s;
         }
-
         .ui-element:active { cursor: grabbing; }
-        
-        .ui-element.selected {
-            outline: 2px solid var(--accent) !important;
-            outline-offset: 2px;
-        }
+        .ui-element.selected { outline: 2px solid var(--accent) !important; outline-offset: 2px; z-index: 999 !important; }
 
-        .text-content {
-            pointer-events: none; /* Let the parent handle dragging */
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .text-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; overflow: hidden; }
 
         /* Resize Handle */
         .resize-handle {
-            position: absolute; 
-            right: -4px; 
-            bottom: -4px; 
-            width: 12px; 
-            height: 12px;
-            background: var(--text-main);
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            cursor: se-resize; 
-            opacity: 0; 
-            transition: opacity 0.2s;
-            z-index: 10;
+            position: absolute; right: -6px; bottom: -6px; width: 14px; height: 14px;
+            background: white; border: 2px solid var(--accent); border-radius: 50%;
+            cursor: se-resize; opacity: 0; transition: 0.2s; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-
         .ui-element.selected .resize-handle { opacity: 1; }
 
-        /* Custom Scrollbars */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #52525b; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #71717a; }
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: none;
+            align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal {
+            background: var(--bg-panel); border: 1px solid var(--border-color); width: 600px;
+            border-radius: var(--radius); padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .modal textarea {
+            width: 100%; height: 300px; background: var(--bg-main); color: #a5b4fc;
+            padding: 15px; border-radius: var(--radius); border: 1px solid var(--border-color);
+            font-family: monospace; font-size: 0.85rem; resize: none; outline: none; margin-top: 15px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
     </style>
 </head>
 <body>
 
-    <!-- TOP NAVBAR -->
     <div class="topbar">
-        <div class="brand">UI Builder</div>
+        <div class="brand">PRO UI Builder</div>
         <div class="topbar-controls">
-            <label style="margin: 0; color: var(--text-muted);">Canvas Background</label>
-            <input type="color" id="canvas-bg-color" value="#1e1e24" onchange="updateCanvasBg(this.value)">
-            <button class="secondary" style="width: auto; padding: 6px 12px;" onclick="clearCanvas()">Clear Canvas</button>
+            <button class="secondary" style="width: auto;" onclick="exportCode()">✦ Export Code</button>
+            <button class="danger" style="width: auto;" onclick="clearCanvas()">Clear All</button>
         </div>
     </div>
 
-    <!-- MAIN WORKSPACE -->
     <div class="workspace">
-        
-        <!-- LEFT SIDEBAR: TOOLS -->
+        <!-- LEFT SIDEBAR -->
         <aside class="sidebar sidebar-left">
             <div class="panel-section">
                 <h2>Insert Elements</h2>
                 <div class="btn-grid">
-                    <button class="secondary" onclick="addElement('div')">Add Container</button>
-                    <button class="secondary" onclick="addElement('button')">Add Button</button>
-                    <button class="secondary" onclick="addElement('text')">Add Text</button>
+                    <button class="secondary" onclick="addElement('div', 'container')">Container</button>
+                    <button class="secondary" onclick="addElement('button', 'button')">Button</button>
+                    <button class="secondary" onclick="addElement('div', 'text')">Text</button>
+                    <button class="secondary" onclick="addElement('div', 'card')">Card</button>
+                    <button class="secondary" onclick="addElement('img', 'image')">Image</button>
+                    <button class="secondary" onclick="addElement('input', 'input')">Input</button>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h2>Canvas Settings</h2>
+                <div class="control-group">
+                    <label>Grid Snap</label>
+                    <select id="snap-grid">
+                        <option value="1">No Snap (1px)</option>
+                        <option value="10" selected>Snap 10px</option>
+                        <option value="20">Snap 20px</option>
+                    </select>
                 </div>
             </div>
         </aside>
 
-        <!-- CENTER: CANVAS -->
+        <!-- CENTER CANVAS -->
         <main id="canvas-wrapper" onclick="deselectElement(event)">
-            <div id="canvas">
-                <!-- Elements injected here -->
-            </div>
+            <div id="canvas"></div>
         </main>
 
-        <!-- RIGHT SIDEBAR: EMPTY STATE -->
+        <!-- RIGHT SIDEBAR: EMPTY -->
         <div class="empty-state" id="empty-state">
-            <p>Select an element to edit its properties.</p>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            <p>Select an element to edit</p>
         </div>
 
         <!-- RIGHT SIDEBAR: PROPERTIES -->
         <aside class="sidebar sidebar-right" id="properties-panel">
             
             <div class="panel-section">
+                <h2>Layout & Position</h2>
+                <div class="row">
+                    <div class="control-group">
+                        <label>X</label>
+                        <input type="number" id="prop-x" oninput="updateLayout()">
+                    </div>
+                    <div class="control-group">
+                        <label>Y</label>
+                        <input type="number" id="prop-y" oninput="updateLayout()">
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <div class="control-group">
+                        <label>W</label>
+                        <input type="number" id="prop-w" oninput="updateLayout()">
+                    </div>
+                    <div class="control-group">
+                        <label>H</label>
+                        <input type="number" id="prop-h" oninput="updateLayout()">
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 15px;">
+                    <button class="secondary" onclick="changeZIndex(1)">Bring Fwd</button>
+                    <button class="secondary" onclick="changeZIndex(-1)">Send Back</button>
+                </div>
+            </div>
+
+            <div class="panel-section" id="content-panel">
                 <h2>Content</h2>
                 <div class="control-group">
-                    <label>Text / Label</label>
-                    <input type="text" id="prop-text" oninput="updateText(this.value)">
+                    <input type="text" id="prop-text" oninput="updateText(this.value)" placeholder="Enter text...">
                 </div>
             </div>
 
@@ -336,37 +259,57 @@
                 <h2>Appearance</h2>
                 <div class="control-group">
                     <label>Background</label>
-                    <div class="color-row">
-                        <input type="color" id="prop-bg1" value="#3b82f6" onchange="updateBackground()">
-                        <input type="color" id="prop-bg2" value="#8b5cf6" onchange="updateBackground()">
-                        <select id="prop-bg-type" onchange="updateBackground()">
-                            <option value="solid">Solid (Left)</option>
-                            <option value="gradient">Gradient</option>
-                            <option value="transparent">Transparent</option>
-                        </select>
+                    <div class="color-picker-wrap">
+                        <div class="color-swatch" id="bg-swatch" style="background: #ffffff;"></div>
+                        <div class="color-hex" id="bg-hex">#ffffff</div>
+                        <input type="color" id="prop-bg" value="#ffffff" oninput="updateColorProp('background', this.value, 'bg-swatch', 'bg-hex')">
                     </div>
                 </div>
 
-                <div class="control-group" style="margin-top: 10px;">
-                    <label>Corner Radius (<span id="radius-val">0</span>px)</label>
-                    <input type="range" id="prop-radius" min="0" max="100" value="0" oninput="updateStyle('borderRadius', this.value + 'px'); document.getElementById('radius-val').innerText = this.value;">
-                </div>
-            </div>
-
-            <div class="panel-section">
-                <h2>Border</h2>
                 <div class="control-group">
-                    <div class="color-row">
-                        <input type="color" id="prop-border-color" value="#ffffff" onchange="updateBorder()">
-                        <input type="range" id="prop-border-width" min="0" max="20" value="0" oninput="updateBorder()">
-                    </div>
+                    <label>Opacity <span class="val" id="opacity-val">100%</span></label>
+                    <input type="range" id="prop-opacity" min="0" max="100" value="100" oninput="updateStyle('opacity', this.value/100, 'opacity-val', this.value+'%')">
+                </div>
+                
+                <div class="control-group">
+                    <label>Radius <span class="val" id="radius-val">0px</span></label>
+                    <input type="range" id="prop-radius" min="0" max="150" value="0" oninput="updateStyle('borderRadius', this.value+'px', 'radius-val', this.value+'px')">
+                </div>
+
+                <div class="control-group">
+                    <label>Rotation <span class="val" id="rotation-val">0°</span></label>
+                    <input type="range" id="prop-rotation" min="0" max="360" value="0" oninput="updateTransform()">
                 </div>
             </div>
 
             <div class="panel-section">
+                <h2>Border & Shadow</h2>
+                <div class="control-group">
+                    <label>Border Color</label>
+                    <div class="color-picker-wrap">
+                        <div class="color-swatch" id="border-swatch" style="background: transparent;"></div>
+                        <div class="color-hex" id="border-hex">transparent</div>
+                        <input type="color" id="prop-border-color" value="#000000" oninput="updateBorder()">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Border Width <span class="val" id="border-val">0px</span></label>
+                    <input type="range" id="prop-border-width" min="0" max="20" value="0" oninput="updateBorder()">
+                </div>
+                
+                <div class="control-group" style="margin-top: 15px;">
+                    <label>Box Shadow (Blur)</label>
+                    <input type="range" id="prop-shadow-blur" min="0" max="100" value="0" oninput="updateShadow()">
+                </div>
+                <div class="control-group">
+                    <label>Glass Blur (Backdrop)</label>
+                    <input type="range" id="prop-glass" min="0" max="50" value="0" oninput="updateStyle('backdropFilter', `blur(${this.value}px)`)">
+                </div>
+            </div>
+
+            <div class="panel-section" id="typography-panel">
                 <h2>Typography</h2>
                 <div class="control-group">
-                    <label>Font Family</label>
                     <select id="prop-font" onchange="updateStyle('fontFamily', this.value)">
                         <option value="'Inter', sans-serif">Inter</option>
                         <option value="'Montserrat', sans-serif">Montserrat</option>
@@ -376,104 +319,115 @@
                 </div>
                 
                 <div class="control-group">
-                    <label>Text Color</label>
-                    <input type="color" id="prop-color" value="#ffffff" onchange="updateStyle('color', this.value)">
+                    <label>Color</label>
+                    <div class="color-picker-wrap">
+                        <div class="color-swatch" id="text-swatch" style="background: #000000;"></div>
+                        <div class="color-hex" id="text-hex">#000000</div>
+                        <input type="color" id="prop-color" value="#000000" oninput="updateColorProp('color', this.value, 'text-swatch', 'text-hex')">
+                    </div>
                 </div>
 
                 <div class="control-group">
-                    <label>Font Size (<span id="font-val">16</span>px)</label>
-                    <input type="range" id="prop-font-size" min="10" max="120" value="16" oninput="updateStyle('fontSize', this.value + 'px'); document.getElementById('font-val').innerText = this.value;">
-                </div>
-
-                <div class="control-group">
-                    <label>Text Effects</label>
-                    <select id="prop-text-effect" onchange="applyTextEffect(this.value)">
-                        <option value="none">None</option>
-                        <option value="shadow">Drop Shadow</option>
-                        <option value="neon">Neon Glow</option>
-                    </select>
+                    <label>Size <span class="val" id="font-val">16px</span></label>
+                    <input type="range" id="prop-font-size" min="10" max="120" value="16" oninput="updateStyle('fontSize', this.value+'px', 'font-val', this.value+'px')">
                 </div>
             </div>
 
+            <button class="secondary" onclick="duplicateElement()">Duplicate Element</button>
             <button class="danger" onclick="deleteSelected()">Delete Element</button>
         </aside>
+    </div>
 
+    <!-- Export Modal -->
+    <div class="modal-overlay" id="export-modal">
+        <div class="modal">
+            <h2 style="font-size: 1.2rem; color: white;">Exported Code</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Copy this HTML to use your design.</p>
+            <textarea id="code-output" readonly></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="copyCode()">Copy to Clipboard</button>
+                <button class="secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
     </div>
 
     <script>
         const canvas = document.getElementById('canvas');
-        const canvasWrapper = document.getElementById('canvas-wrapper');
         const propertiesPanel = document.getElementById('properties-panel');
         const emptyState = document.getElementById('empty-state');
         let selectedEl = null;
+        let zIndexCounter = 1;
 
-        // --- GLOBAL CANVAS ACTIONS ---
-        function updateCanvasBg(color) {
-            canvasWrapper.style.backgroundColor = color;
-        }
-
+        // --- GLOBAL ACTIONS ---
         function clearCanvas() {
-            if(confirm("Are you sure you want to clear the canvas?")) {
+            if(confirm("Clear the entire canvas?")) {
                 canvas.innerHTML = '';
-                deselectElement({ target: canvasWrapper });
+                deselectElement({ target: canvas.parentElement });
             }
         }
 
         // --- ADD ELEMENTS ---
-        function addElement(type) {
-            const el = document.createElement(type === 'text' ? 'div' : type);
+        function addElement(tag, type) {
+            const el = document.createElement(tag);
             el.className = 'ui-element';
+            el.dataset.type = type;
+            el.dataset.rotation = "0";
             
-            // Text Container inside Element
-            const textSpan = document.createElement('span');
-            textSpan.className = 'text-content';
+            // Default styling based on type
+            el.style.top = '100px'; el.style.left = '100px'; el.style.zIndex = zIndexCounter++;
+            el.style.fontFamily = "'Inter', sans-serif"; el.style.fontSize = '16px';
             
-            // Default Styles
-            el.style.top = '100px';
-            el.style.left = '100px';
-            el.style.color = '#ffffff';
-            el.style.fontFamily = "'Inter', sans-serif";
-            el.style.fontSize = '16px';
-            
-            if (type === 'div') {
-                el.style.width = '150px';
-                el.style.height = '150px';
-                el.style.background = '#3b82f6';
-                textSpan.innerText = 'Container';
+            let innerText = '';
+
+            if (type === 'container') {
+                el.style.width = '200px'; el.style.height = '200px'; el.style.background = '#6366f1';
+                innerText = 'Container';
+            } else if (type === 'card') {
+                el.style.width = '300px'; el.style.height = '150px'; el.style.background = '#27272a';
+                el.style.borderRadius = '12px'; el.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+                el.style.color = 'white'; innerText = 'Card Element';
             } else if (type === 'button') {
-                el.style.width = '120px';
-                el.style.height = '45px';
-                el.style.background = '#8b5cf6';
-                el.style.border = 'none';
-                el.style.borderRadius = '6px';
-                textSpan.innerText = 'Click Me';
+                el.style.width = '120px'; el.style.height = '45px'; el.style.background = '#8b5cf6';
+                el.style.border = 'none'; el.style.borderRadius = '8px'; el.style.color = 'white';
+                el.style.display = 'flex'; el.style.alignItems = 'center'; el.style.justifyContent = 'center';
+                innerText = 'Button';
             } else if (type === 'text') {
-                el.style.width = 'auto';
-                el.style.height = 'auto';
-                el.style.fontSize = '32px';
-                el.style.fontWeight = 'bold';
-                textSpan.innerText = 'Double Click to Edit';
+                el.style.width = 'max-content'; el.style.height = 'max-content'; el.style.fontSize = '32px';
+                el.style.fontWeight = 'bold'; el.style.color = '#ffffff'; innerText = 'Editable Text';
+            } else if (type === 'image') {
+                const url = prompt("Enter Image URL:", "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=200&auto=format&fit=crop");
+                if(!url) return;
+                el.src = url; el.style.width = '200px'; el.style.height = 'auto'; el.style.borderRadius = '8px';
+                el.style.objectFit = 'cover'; el.draggable = false;
+            } else if (type === 'input') {
+                el.type = 'text'; el.placeholder = 'Input Field...';
+                el.style.width = '200px'; el.style.height = '45px'; el.style.borderRadius = '8px';
+                el.style.border = '1px solid #52525b'; el.style.background = '#18181b'; el.style.color = 'white';
+                el.style.padding = '0 15px'; el.style.outline = 'none';
             }
 
-            // Resize Handle
+            if(tag !== 'img' && tag !== 'input') {
+                const textSpan = document.createElement('span');
+                textSpan.className = 'text-content'; textSpan.innerText = innerText;
+                el.appendChild(textSpan);
+            }
+
             const handle = document.createElement('div');
             handle.className = 'resize-handle';
-            
-            // Append structures
-            el.appendChild(textSpan);
             el.appendChild(handle);
+
             canvas.appendChild(el);
-
-            // Event Listeners
-            el.addEventListener('mousedown', initDrag);
-            handle.addEventListener('mousedown', initResize);
-            el.addEventListener('click', selectElement);
-
-            // Auto select new element
+            attachEvents(el, handle);
             selectElement({ target: el, stopPropagation: () => {} });
         }
 
-        // --- SELECTION LOGIC ---
+        function attachEvents(el, handle) {
+            el.addEventListener('mousedown', initDrag);
+            handle.addEventListener('mousedown', initResize);
+            el.addEventListener('click', selectElement);
+        }
+
+        // --- SELECTION & PROPERTIES ---
         function selectElement(e) {
             e.stopPropagation();
             if (e.target.classList.contains('resize-handle')) return;
@@ -482,7 +436,6 @@
             selectedEl = e.target.closest('.ui-element');
             selectedEl.classList.add('selected');
             
-            // Toggle sidebars
             emptyState.style.display = 'none';
             propertiesPanel.classList.add('active');
             
@@ -490,149 +443,259 @@
         }
 
         function deselectElement(e) {
-            if (e.target === canvasWrapper || e.target === canvas) {
+            if (e.target.id === 'canvas-wrapper' || e.target.id === 'canvas') {
                 if (selectedEl) selectedEl.classList.remove('selected');
                 selectedEl = null;
-                
-                // Toggle sidebars
                 propertiesPanel.classList.remove('active');
                 emptyState.style.display = 'flex';
             }
         }
 
-        function deleteSelected() {
-            if (selectedEl) {
-                selectedEl.remove();
-                deselectElement({ target: canvasWrapper });
-            }
+        function rgbToHex(rgb) {
+            if(!rgb || rgb === 'rgba(0, 0, 0, 0)' || rgb === 'transparent') return '#ffffff';
+            let a = rgb.split("(")[1].split(")")[0].split(",");
+            return "#" + a.map(x => {
+                x = parseInt(x).toString(16);
+                return (x.length == 1) ? "0"+x : x;
+            }).slice(0,3).join("");
         }
 
-        // --- PROPERTY BINDING ---
         function loadProperties() {
             if (!selectedEl) return;
-            
-            const textSpan = selectedEl.querySelector('.text-content');
-            document.getElementById('prop-text').value = textSpan ? textSpan.innerText : '';
-            
             const styles = window.getComputedStyle(selectedEl);
             
+            // Layout
+            document.getElementById('prop-x').value = parseInt(styles.left);
+            document.getElementById('prop-y').value = parseInt(styles.top);
+            document.getElementById('prop-w').value = parseInt(styles.width);
+            document.getElementById('prop-h').value = parseInt(styles.height);
+
+            // Content
+            const textSpan = selectedEl.querySelector('.text-content');
+            document.getElementById('content-panel').style.display = textSpan || selectedEl.tagName === 'INPUT' ? 'block' : 'none';
+            if(textSpan) document.getElementById('prop-text').value = textSpan.innerText;
+            if(selectedEl.tagName === 'INPUT') document.getElementById('prop-text').value = selectedEl.placeholder;
+
+            // Appearance
+            const bgColor = rgbToHex(styles.backgroundColor);
+            document.getElementById('prop-bg').value = bgColor;
+            document.getElementById('bg-swatch').style.background = bgColor;
+            document.getElementById('bg-hex').innerText = bgColor;
+
+            const opacity = Math.round(parseFloat(styles.opacity) * 100) || 100;
+            document.getElementById('prop-opacity').value = opacity;
+            document.getElementById('opacity-val').innerText = opacity + '%';
+
             const radius = parseInt(styles.borderRadius) || 0;
             document.getElementById('prop-radius').value = radius;
-            document.getElementById('radius-val').innerText = radius;
-            
-            document.getElementById('prop-border-width').value = parseInt(styles.borderWidth) || 0;
-            
-            const fontSize = parseInt(styles.fontSize) || 16;
-            document.getElementById('prop-font-size').value = fontSize;
-            document.getElementById('font-val').innerText = fontSize;
-        }
+            document.getElementById('radius-val').innerText = radius + 'px';
 
-        function updateText(value) {
-            if (!selectedEl) return;
-            const textSpan = selectedEl.querySelector('.text-content');
-            if(textSpan) textSpan.innerText = value;
-        }
+            document.getElementById('prop-rotation').value = selectedEl.dataset.rotation || 0;
+            document.getElementById('rotation-val').innerText = (selectedEl.dataset.rotation || 0) + '°';
 
-        function updateStyle(prop, value) {
-            if (!selectedEl) return;
-            selectedEl.style[prop] = value;
-        }
+            // Typography (Hide for images)
+            document.getElementById('typography-panel').style.display = selectedEl.tagName === 'IMG' ? 'none' : 'block';
+            if(selectedEl.tagName !== 'IMG') {
+                const color = rgbToHex(styles.color);
+                document.getElementById('prop-color').value = color;
+                document.getElementById('text-swatch').style.background = color;
+                document.getElementById('text-hex').innerText = color;
 
-        function updateBackground() {
-            if (!selectedEl) return;
-            const c1 = document.getElementById('prop-bg1').value;
-            const c2 = document.getElementById('prop-bg2').value;
-            const type = document.getElementById('prop-bg-type').value;
-
-            if (type === 'solid') {
-                selectedEl.style.background = c1;
-            } else if (type === 'gradient') {
-                selectedEl.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
-            } else {
-                selectedEl.style.background = 'transparent';
+                const fontSize = parseInt(styles.fontSize) || 16;
+                document.getElementById('prop-font-size').value = fontSize;
+                document.getElementById('font-val').innerText = fontSize + 'px';
             }
+        }
+
+        function updateLayout() {
+            if(!selectedEl) return;
+            selectedEl.style.left = document.getElementById('prop-x').value + 'px';
+            selectedEl.style.top = document.getElementById('prop-y').value + 'px';
+            selectedEl.style.width = document.getElementById('prop-w').value + 'px';
+            selectedEl.style.height = document.getElementById('prop-h').value + 'px';
+        }
+
+        function updateText(val) {
+            if(!selectedEl) return;
+            const textSpan = selectedEl.querySelector('.text-content');
+            if(textSpan) textSpan.innerText = val;
+            if(selectedEl.tagName === 'INPUT') selectedEl.placeholder = val;
+        }
+
+        function updateStyle(prop, val, labelId = null, labelVal = null) {
+            if(!selectedEl) return;
+            selectedEl.style[prop] = val;
+            if(labelId) document.getElementById(labelId).innerText = labelVal;
+        }
+
+        function updateColorProp(prop, color, swatchId, hexId) {
+            if(!selectedEl) return;
+            selectedEl.style[prop] = color;
+            document.getElementById(swatchId).style.background = color;
+            document.getElementById(hexId).innerText = color;
+        }
+
+        function updateTransform() {
+            if(!selectedEl) return;
+            const rot = document.getElementById('prop-rotation').value;
+            selectedEl.dataset.rotation = rot;
+            selectedEl.style.transform = `rotate(${rot}deg)`;
+            document.getElementById('rotation-val').innerText = rot + '°';
         }
 
         function updateBorder() {
-            if (!selectedEl) return;
+            if(!selectedEl) return;
             const color = document.getElementById('prop-border-color').value;
             const width = document.getElementById('prop-border-width').value;
-            if(width > 0) {
-                selectedEl.style.border = `${width}px solid ${color}`;
-            } else {
-                selectedEl.style.border = 'none';
-            }
+            
+            document.getElementById('border-swatch').style.background = color;
+            document.getElementById('border-hex').innerText = color;
+            document.getElementById('border-val').innerText = width + 'px';
+
+            selectedEl.style.border = width > 0 ? `${width}px solid ${color}` : 'none';
         }
 
-        function applyTextEffect(type) {
-            if (!selectedEl) return;
-            const color = window.getComputedStyle(selectedEl).color;
-            if (type === 'none') selectedEl.style.textShadow = 'none';
-            if (type === 'shadow') selectedEl.style.textShadow = `3px 3px 6px rgba(0,0,0,0.6)`;
-            if (type === 'neon') selectedEl.style.textShadow = `0 0 5px ${color}, 0 0 15px ${color}, 0 0 30px ${color}`;
+        function updateShadow() {
+            if(!selectedEl) return;
+            const blur = document.getElementById('prop-shadow-blur').value;
+            selectedEl.style.boxShadow = blur > 0 ? `0 10px ${blur}px rgba(0,0,0,0.5)` : 'none';
         }
 
-        // --- DRAG LOGIC ---
-        let isDragging = false;
-        let startX, startY, startLeft, startTop;
+        function changeZIndex(dir) {
+            if(!selectedEl) return;
+            const current = parseInt(window.getComputedStyle(selectedEl).zIndex) || 1;
+            selectedEl.style.zIndex = current + dir;
+        }
+
+        function deleteSelected() {
+            if(selectedEl) { selectedEl.remove(); deselectElement({ target: canvas.parentElement }); }
+        }
+
+        function duplicateElement() {
+            if(!selectedEl) return;
+            const clone = selectedEl.cloneNode(true);
+            clone.style.left = (parseInt(selectedEl.style.left) + 20) + 'px';
+            clone.style.top = (parseInt(selectedEl.style.top) + 20) + 'px';
+            clone.style.zIndex = zIndexCounter++;
+            
+            const handle = clone.querySelector('.resize-handle');
+            canvas.appendChild(clone);
+            attachEvents(clone, handle);
+            selectElement({ target: clone, stopPropagation: () => {} });
+        }
+
+        // --- DRAG & RESIZE ---
+        let isDragging = false, isResizing = false;
+        let startX, startY, startLeft, startTop, startW, startH;
+
+        function getSnap() { return parseInt(document.getElementById('snap-grid').value) || 1; }
 
         function initDrag(e) {
             if (e.target.classList.contains('resize-handle')) return;
-            isDragging = true;
-            selectedEl = e.target.closest('.ui-element');
-            startX = e.clientX;
-            startY = e.clientY;
-            startLeft = parseInt(window.getComputedStyle(selectedEl).left) || 0;
-            startTop = parseInt(window.getComputedStyle(selectedEl).top) || 0;
-            
-            document.addEventListener('mousemove', doDrag);
-            document.addEventListener('mouseup', stopDrag);
+            isDragging = true; selectedEl = e.target.closest('.ui-element');
+            startX = e.clientX; startY = e.clientY;
+            startLeft = parseInt(selectedEl.style.left) || 0; startTop = parseInt(selectedEl.style.top) || 0;
+            document.addEventListener('mousemove', doDrag); document.addEventListener('mouseup', stopAction);
         }
 
         function doDrag(e) {
             if (!isDragging) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            selectedEl.style.left = startLeft + dx + 'px';
-            selectedEl.style.top = startTop + dy + 'px';
+            const snap = getSnap();
+            let nx = startLeft + (e.clientX - startX); let ny = startTop + (e.clientY - startY);
+            nx = Math.round(nx / snap) * snap; ny = Math.round(ny / snap) * snap;
+            
+            selectedEl.style.left = nx + 'px'; selectedEl.style.top = ny + 'px';
+            document.getElementById('prop-x').value = nx; document.getElementById('prop-y').value = ny;
         }
-
-        function stopDrag() {
-            isDragging = false;
-            document.removeEventListener('mousemove', doDrag);
-            document.removeEventListener('mouseup', stopDrag);
-        }
-
-        // --- RESIZE LOGIC ---
-        let isResizing = false;
-        let startW, startH;
 
         function initResize(e) {
-            e.stopPropagation();
-            isResizing = true;
-            selectedEl = e.target.closest('.ui-element');
-            startX = e.clientX;
-            startY = e.clientY;
-            startW = parseInt(window.getComputedStyle(selectedEl).width) || 0;
-            startH = parseInt(window.getComputedStyle(selectedEl).height) || 0;
-
-            document.addEventListener('mousemove', doResize);
-            document.addEventListener('mouseup', stopResize);
+            e.stopPropagation(); isResizing = true; selectedEl = e.target.closest('.ui-element');
+            startX = e.clientX; startY = e.clientY;
+            startW = parseInt(window.getComputedStyle(selectedEl).width); startH = parseInt(window.getComputedStyle(selectedEl).height);
+            document.addEventListener('mousemove', doResize); document.addEventListener('mouseup', stopAction);
         }
 
         function doResize(e) {
             if (!isResizing) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            selectedEl.style.width = Math.max(20, startW + dx) + 'px'; // Minimum 20px
-            selectedEl.style.height = Math.max(20, startH + dy) + 'px'; // Minimum 20px
+            const snap = getSnap();
+            let nw = Math.max(20, startW + (e.clientX - startX)); let nh = Math.max(20, startH + (e.clientY - startY));
+            nw = Math.round(nw / snap) * snap; nh = Math.round(nh / snap) * snap;
+
+            selectedEl.style.width = nw + 'px'; selectedEl.style.height = nh + 'px';
+            document.getElementById('prop-w').value = nw; document.getElementById('prop-h').value = nh;
         }
 
-        function stopResize() {
-            isResizing = false;
-            document.removeEventListener('mousemove', doResize);
-            document.removeEventListener('mouseup', stopResize);
+        function stopAction() {
+            isDragging = false; isResizing = false;
+            document.removeEventListener('mousemove', doDrag); document.removeEventListener('mousemove', doResize);
+            document.removeEventListener('mouseup', stopAction);
         }
+
+        // --- EXPORT LOGIC ---
+        function exportCode() {
+            if(selectedEl) selectedEl.classList.remove('selected');
+            
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            wrapper.style.width = '100%';
+            wrapper.style.height = '100vh';
+            wrapper.style.backgroundColor = '#131316';
+            wrapper.style.overflow = 'hidden';
+
+            const cloneCanvas = canvas.cloneNode(true);
+            
+            // Clean up internal editor classes and handles
+            cloneCanvas.querySelectorAll('.ui-element').forEach(el => {
+                el.classList.remove('ui-element', 'selected');
+                el.removeAttribute('data-type');
+                el.removeAttribute('data-rotation');
+                const handle = el.querySelector('.resize-handle');
+                if(handle) handle.remove();
+                
+                // Fix absolute positions for export
+                el.style.position = 'absolute';
+            });
+
+            wrapper.appendChild(cloneCanvas);
+
+            const finalHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exported UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@400;700&family=Pacifico&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; background: #131316; }
+        .text-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    </style>
+</head>
+<body>
+${wrapper.outerHTML}
+</body>
+</html>`;
+
+            document.getElementById('code-output').value = finalHTML;
+            document.getElementById('export-modal').style.display = 'flex';
+        }
+
+        function copyCode() {
+            const code = document.getElementById('code-output');
+            code.select();
+            document.execCommand('copy');
+            alert('Code copied to clipboard!');
+        }
+
+        function closeModal() {
+            document.getElementById('export-modal').style.display = 'none';
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Delete' || e.key === 'Backspace') {
+                if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') deleteSelected();
+            }
+        });
     </script>
 </body>
 </html>
