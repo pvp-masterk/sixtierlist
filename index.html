@@ -20,6 +20,7 @@
             --canvas-bg: #131316;
             --radius: 8px;
             --font-main: 'Inter', sans-serif;
+            --guide-color: #38bdf8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-main); }
@@ -44,12 +45,12 @@
         .topbar-controls { display: flex; align-items: center; gap: 15px; }
 
         /* Workspace */
-        .workspace { display: flex; flex-grow: 1; height: calc(100vh - 55px); }
+        .workspace { display: flex; flex-grow: 1; height: calc(100vh - 55px); position: relative; }
 
         /* Sidebars */
         .sidebar {
             background: var(--bg-panel); padding: 20px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 24px;
+            display: flex; flex-direction: column; gap: 24px; z-index: 10;
         }
         .sidebar-left { width: 280px; border-right: 1px solid var(--border-color); }
         .sidebar-right { width: 320px; border-left: 1px solid var(--border-color); display: none; }
@@ -58,7 +59,7 @@
         .empty-state {
             width: 320px; border-left: 1px solid var(--border-color); display: flex;
             align-items: center; justify-content: center; color: var(--text-muted);
-            text-align: center; padding: 20px; background: var(--bg-panel); flex-direction: column; gap: 10px;
+            text-align: center; padding: 20px; background: var(--bg-panel); flex-direction: column; gap: 10px; z-index: 10;
         }
 
         /* Typography & Grouping */
@@ -73,94 +74,64 @@
         label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; display: flex; justify-content: space-between; }
         label span.val { color: var(--accent); }
 
-        /* --- CUSTOM CONTROLS --- */
+        /* Controls */
         input[type="text"], input[type="number"], select {
             width: 100%; padding: 10px 12px; background: var(--bg-input); border: 1px solid var(--border-color);
             color: white; border-radius: 6px; outline: none; font-size: 0.85rem; transition: 0.2s;
         }
-
         input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
-
-        /* Custom Dropdown */
+        
         select {
             appearance: none; cursor: pointer;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat; background-position: right 10px center; background-size: 14px;
         }
 
-        /* Custom Range Slider */
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
-            background: var(--accent); cursor: pointer; margin-top: -6px; border: 2px solid white;
-        }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; margin-top: -6px; border: 2px solid white; }
         input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--border-color); border-radius: 2px; }
 
-        /* Custom Color Pickers */
-        .color-picker-wrap {
-            position: relative; width: 100%; height: 38px; border-radius: 6px;
-            border: 1px solid var(--border-color); overflow: hidden; cursor: pointer; display: flex; align-items: center;
-        }
+        .color-picker-wrap { position: relative; width: 100%; height: 38px; border-radius: 6px; border: 1px solid var(--border-color); overflow: hidden; cursor: pointer; display: flex; align-items: center; }
         .color-swatch { width: 38px; height: 100%; border-right: 1px solid var(--border-color); }
         .color-hex { padding-left: 10px; font-size: 0.85rem; font-family: monospace; color: var(--text-main); }
         input[type="color"] { position: absolute; opacity: 0; width: 200%; height: 200%; top: -50%; left: -50%; cursor: pointer; }
 
-        /* Buttons */
-        button {
-            background: var(--accent); color: white; border: none; padding: 10px 16px;
-            border-radius: var(--radius); cursor: pointer; font-weight: 500; font-size: 0.85rem;
-            transition: 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        button { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: var(--radius); cursor: pointer; font-weight: 500; font-size: 0.85rem; transition: 0.2s; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
         button:hover { background: var(--accent-hover); transform: translateY(-1px); }
         button.secondary { background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); }
         button.secondary:hover { background: var(--border-color); }
         button.danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
         button.danger:hover { background: #ef4444; color: white; }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         /* Canvas Area */
-        #canvas-wrapper {
-            flex-grow: 1; position: relative; background-color: var(--canvas-bg);
-            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px; overflow: auto;
-        }
-
-        #canvas { width: 3000px; height: 3000px; position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+        #canvas-wrapper { flex-grow: 1; position: relative; background-color: var(--canvas-bg); background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 20px 20px; overflow: auto; }
+        #canvas { width: 3000px; height: 3000px; position: absolute; top: 0; left: 0; transform-origin: 0 0; transition: transform 0.1s ease-out; }
 
         /* UI Elements */
-        .ui-element {
-            position: absolute; min-width: 20px; min-height: 20px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: grab; user-select: none; box-sizing: border-box; transition: outline 0.1s;
-        }
+        .ui-element { position: absolute; min-width: 10px; min-height: 10px; display: flex; align-items: center; justify-content: center; cursor: grab; user-select: none; box-sizing: border-box; transition: outline 0.1s; background-size: cover; background-position: center; }
         .ui-element:active { cursor: grabbing; }
         .ui-element.selected { outline: 2px solid var(--accent) !important; outline-offset: 2px; z-index: 999 !important; }
-
         .text-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; overflow: hidden; }
 
-        /* Resize Handle */
-        .resize-handle {
-            position: absolute; right: -6px; bottom: -6px; width: 14px; height: 14px;
-            background: white; border: 2px solid var(--accent); border-radius: 50%;
-            cursor: se-resize; opacity: 0; transition: 0.2s; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
+        .resize-handle { position: absolute; right: -6px; bottom: -6px; width: 14px; height: 14px; background: white; border: 2px solid var(--accent); border-radius: 50%; cursor: se-resize; opacity: 0; transition: 0.2s; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         .ui-element.selected .resize-handle { opacity: 1; }
 
+        /* Smart Guides */
+        .guide-line { position: absolute; background: var(--guide-color); z-index: 9998; pointer-events: none; opacity: 0; transition: opacity 0.1s; }
+        .guide-line.v { width: 1px; height: 3000px; top: 0; }
+        .guide-line.h { height: 1px; width: 3000px; left: 0; }
+
+        /* Context Menu */
+        #context-menu { position: fixed; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 6px; padding: 5px 0; min-width: 180px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; z-index: 9999; }
+        .cm-item { padding: 8px 15px; font-size: 0.85rem; cursor: pointer; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .cm-item:hover { background: var(--accent); color: white; }
+        .cm-divider { height: 1px; background: var(--border-color); margin: 5px 0; }
+
         /* Modal */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: none;
-            align-items: center; justify-content: center; z-index: 1000;
-        }
-        .modal {
-            background: var(--bg-panel); border: 1px solid var(--border-color); width: 600px;
-            border-radius: var(--radius); padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .modal textarea {
-            width: 100%; height: 300px; background: var(--bg-main); color: #a5b4fc;
-            padding: 15px; border-radius: var(--radius); border: 1px solid var(--border-color);
-            font-family: monospace; font-size: 0.85rem; resize: none; outline: none; margin-top: 15px;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 10000; }
+        .modal { background: var(--bg-panel); border: 1px solid var(--border-color); width: 800px; border-radius: var(--radius); padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); max-height: 90vh; display: flex; flex-direction: column; }
+        .modal textarea { flex-grow: 1; min-height: 400px; background: var(--bg-main); color: #a5b4fc; padding: 15px; border-radius: var(--radius); border: 1px solid var(--border-color); font-family: monospace; font-size: 0.85rem; resize: none; outline: none; margin-top: 15px; white-space: pre; }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-main); }
@@ -173,6 +144,13 @@
     <div class="topbar">
         <div class="brand">PRO UI Builder</div>
         <div class="topbar-controls">
+            <div class="row" style="margin-right: 20px;">
+                <label style="margin-right: 10px; color: white;">Zoom:</label>
+                <input type="range" id="zoom-slider" min="0.5" max="2" step="0.1" value="1" style="width: 100px;" oninput="updateZoom()">
+                <span id="zoom-val" style="font-size: 12px; margin-left: 10px;">100%</span>
+            </div>
+            <button class="secondary" style="width: auto; padding: 8px 12px;" onclick="undo()" title="Undo (Ctrl+Z)">↩</button>
+            <button class="secondary" style="width: auto; padding: 8px 12px;" onclick="redo()" title="Redo (Ctrl+Y)">↪</button>
             <button class="secondary" style="width: auto;" onclick="exportCode()">✦ Export Code</button>
             <button class="danger" style="width: auto;" onclick="clearCanvas()">Clear All</button>
         </div>
@@ -190,6 +168,18 @@
                     <button class="secondary" onclick="addElement('div', 'card')">Card</button>
                     <button class="secondary" onclick="addElement('img', 'image')">Image</button>
                     <button class="secondary" onclick="addElement('input', 'input')">Input</button>
+                    <button class="secondary" onclick="addElement('div', 'avatar')">Avatar</button>
+                    <button class="secondary" onclick="addElement('div', 'badge')">Badge</button>
+                    <button class="secondary" onclick="addElement('div', 'progress')">Progress Bar</button>
+                    <button class="secondary" onclick="addElement('div', 'divider')">Divider</button>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h2>UI Templates</h2>
+                <div class="control-group">
+                    <button class="secondary" style="border-color: var(--accent); color: #a5b4fc;" onclick="loadTemplate('login')">Login Form</button>
+                    <button class="secondary" style="border-color: var(--accent); color: #a5b4fc;" onclick="loadTemplate('pricing')">Pricing Card</button>
                 </div>
             </div>
 
@@ -208,7 +198,11 @@
 
         <!-- CENTER CANVAS -->
         <main id="canvas-wrapper" onclick="deselectElement(event)">
-            <div id="canvas"></div>
+            <div id="canvas">
+                <!-- Smart Guides -->
+                <div class="guide-line v" id="guide-v"></div>
+                <div class="guide-line h" id="guide-h"></div>
+            </div>
         </main>
 
         <!-- RIGHT SIDEBAR: EMPTY -->
@@ -225,60 +219,74 @@
                 <div class="row">
                     <div class="control-group">
                         <label>X</label>
-                        <input type="number" id="prop-x" oninput="updateLayout()">
+                        <input type="number" id="prop-x" onchange="updateLayout(); saveState()">
                     </div>
                     <div class="control-group">
                         <label>Y</label>
-                        <input type="number" id="prop-y" oninput="updateLayout()">
+                        <input type="number" id="prop-y" onchange="updateLayout(); saveState()">
                     </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
                     <div class="control-group">
                         <label>W</label>
-                        <input type="number" id="prop-w" oninput="updateLayout()">
+                        <input type="number" id="prop-w" onchange="updateLayout(); saveState()">
                     </div>
                     <div class="control-group">
                         <label>H</label>
-                        <input type="number" id="prop-h" oninput="updateLayout()">
+                        <input type="number" id="prop-h" onchange="updateLayout(); saveState()">
                     </div>
-                </div>
-                <div class="row" style="margin-top: 15px;">
-                    <button class="secondary" onclick="changeZIndex(1)">Bring Fwd</button>
-                    <button class="secondary" onclick="changeZIndex(-1)">Send Back</button>
                 </div>
             </div>
 
             <div class="panel-section" id="content-panel">
                 <h2>Content</h2>
                 <div class="control-group">
-                    <input type="text" id="prop-text" oninput="updateText(this.value)" placeholder="Enter text...">
+                    <input type="text" id="prop-text" oninput="updateText(this.value)" onchange="saveState()" placeholder="Enter text...">
                 </div>
             </div>
 
             <div class="panel-section">
-                <h2>Appearance</h2>
+                <h2>Background</h2>
+                <div class="row" style="margin-bottom: 10px;">
+                    <select id="bg-type" onchange="toggleBackgroundType(); saveState()">
+                        <option value="solid">Solid Color</option>
+                        <option value="gradient">Linear Gradient</option>
+                    </select>
+                </div>
+                
                 <div class="control-group">
-                    <label>Background</label>
+                    <label>Color 1</label>
                     <div class="color-picker-wrap">
                         <div class="color-swatch" id="bg-swatch" style="background: #ffffff;"></div>
                         <div class="color-hex" id="bg-hex">#ffffff</div>
-                        <input type="color" id="prop-bg" value="#ffffff" oninput="updateColorProp('background', this.value, 'bg-swatch', 'bg-hex')">
+                        <input type="color" id="prop-bg" value="#ffffff" oninput="updateBackground()" onchange="saveState()">
                     </div>
                 </div>
 
-                <div class="control-group">
+                <div class="control-group" id="gradient-controls" style="display: none;">
+                    <label>Color 2</label>
+                    <div class="color-picker-wrap">
+                        <div class="color-swatch" id="bg-swatch2" style="background: #000000;"></div>
+                        <div class="color-hex" id="bg-hex2">#000000</div>
+                        <input type="color" id="prop-bg2" value="#000000" oninput="updateBackground()" onchange="saveState()">
+                    </div>
+                    <label style="margin-top: 10px;">Angle <span class="val" id="angle-val">90°</span></label>
+                    <input type="range" id="prop-angle" min="0" max="360" value="90" oninput="updateBackground(); document.getElementById('angle-val').innerText=this.value+'°'" onchange="saveState()">
+                </div>
+
+                <div class="control-group" style="margin-top: 15px;">
                     <label>Opacity <span class="val" id="opacity-val">100%</span></label>
-                    <input type="range" id="prop-opacity" min="0" max="100" value="100" oninput="updateStyle('opacity', this.value/100, 'opacity-val', this.value+'%')">
+                    <input type="range" id="prop-opacity" min="0" max="100" value="100" oninput="updateStyle('opacity', this.value/100, 'opacity-val', this.value+'%')" onchange="saveState()">
                 </div>
                 
                 <div class="control-group">
                     <label>Radius <span class="val" id="radius-val">0px</span></label>
-                    <input type="range" id="prop-radius" min="0" max="150" value="0" oninput="updateStyle('borderRadius', this.value+'px', 'radius-val', this.value+'px')">
+                    <input type="range" id="prop-radius" min="0" max="150" value="0" oninput="updateStyle('borderRadius', this.value+'px', 'radius-val', this.value+'px')" onchange="saveState()">
                 </div>
 
                 <div class="control-group">
                     <label>Rotation <span class="val" id="rotation-val">0°</span></label>
-                    <input type="range" id="prop-rotation" min="0" max="360" value="0" oninput="updateTransform()">
+                    <input type="range" id="prop-rotation" min="0" max="360" value="0" oninput="updateTransform()" onchange="saveState()">
                 </div>
             </div>
 
@@ -288,29 +296,25 @@
                     <label>Border Color</label>
                     <div class="color-picker-wrap">
                         <div class="color-swatch" id="border-swatch" style="background: transparent;"></div>
-                        <div class="color-hex" id="border-hex">transparent</div>
-                        <input type="color" id="prop-border-color" value="#000000" oninput="updateBorder()">
+                        <div class="color-hex" id="border-hex">#000000</div>
+                        <input type="color" id="prop-border-color" value="#000000" oninput="updateBorder()" onchange="saveState()">
                     </div>
                 </div>
                 <div class="control-group">
                     <label>Border Width <span class="val" id="border-val">0px</span></label>
-                    <input type="range" id="prop-border-width" min="0" max="20" value="0" oninput="updateBorder()">
+                    <input type="range" id="prop-border-width" min="0" max="20" value="0" oninput="updateBorder()" onchange="saveState()">
                 </div>
                 
                 <div class="control-group" style="margin-top: 15px;">
                     <label>Box Shadow (Blur)</label>
-                    <input type="range" id="prop-shadow-blur" min="0" max="100" value="0" oninput="updateShadow()">
-                </div>
-                <div class="control-group">
-                    <label>Glass Blur (Backdrop)</label>
-                    <input type="range" id="prop-glass" min="0" max="50" value="0" oninput="updateStyle('backdropFilter', `blur(${this.value}px)`)">
+                    <input type="range" id="prop-shadow-blur" min="0" max="100" value="0" oninput="updateShadow()" onchange="saveState()">
                 </div>
             </div>
 
             <div class="panel-section" id="typography-panel">
                 <h2>Typography</h2>
                 <div class="control-group">
-                    <select id="prop-font" onchange="updateStyle('fontFamily', this.value)">
+                    <select id="prop-font" onchange="updateStyle('fontFamily', this.value); saveState()">
                         <option value="'Inter', sans-serif">Inter</option>
                         <option value="'Montserrat', sans-serif">Montserrat</option>
                         <option value="'Pacifico', cursive">Pacifico</option>
@@ -323,26 +327,32 @@
                     <div class="color-picker-wrap">
                         <div class="color-swatch" id="text-swatch" style="background: #000000;"></div>
                         <div class="color-hex" id="text-hex">#000000</div>
-                        <input type="color" id="prop-color" value="#000000" oninput="updateColorProp('color', this.value, 'text-swatch', 'text-hex')">
+                        <input type="color" id="prop-color" value="#000000" oninput="updateColorProp('color', this.value, 'text-swatch', 'text-hex')" onchange="saveState()">
                     </div>
                 </div>
 
                 <div class="control-group">
                     <label>Size <span class="val" id="font-val">16px</span></label>
-                    <input type="range" id="prop-font-size" min="10" max="120" value="16" oninput="updateStyle('fontSize', this.value+'px', 'font-val', this.value+'px')">
+                    <input type="range" id="prop-font-size" min="10" max="120" value="16" oninput="updateStyle('fontSize', this.value+'px', 'font-val', this.value+'px')" onchange="saveState()">
                 </div>
             </div>
-
-            <button class="secondary" onclick="duplicateElement()">Duplicate Element</button>
-            <button class="danger" onclick="deleteSelected()">Delete Element</button>
         </aside>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu">
+        <div class="cm-item" onclick="duplicateElement(); hideContextMenu()">Duplicate</div>
+        <div class="cm-item" onclick="changeZIndex(1); hideContextMenu()">Bring to Front</div>
+        <div class="cm-item" onclick="changeZIndex(-1); hideContextMenu()">Send to Back</div>
+        <div class="cm-divider"></div>
+        <div class="cm-item" style="color: #ef4444;" onclick="deleteSelected(); hideContextMenu()">Delete</div>
     </div>
 
     <!-- Export Modal -->
     <div class="modal-overlay" id="export-modal">
         <div class="modal">
-            <h2 style="font-size: 1.2rem; color: white;">Exported Code</h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Copy this HTML to use your design.</p>
+            <h2 style="font-size: 1.2rem; color: white;">Exported Code (Clean CSS/HTML)</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Production-ready structure with extracted classes.</p>
             <textarea id="code-output" readonly></textarea>
             <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <button onclick="copyCode()">Copy to Clipboard</button>
@@ -355,58 +365,163 @@
         const canvas = document.getElementById('canvas');
         const propertiesPanel = document.getElementById('properties-panel');
         const emptyState = document.getElementById('empty-state');
+        const guideV = document.getElementById('guide-v');
+        const guideH = document.getElementById('guide-h');
+        
         let selectedEl = null;
         let zIndexCounter = 1;
+        let scale = 1;
+
+        // --- UNDO/REDO STATE MANAGEMENT ---
+        let historyStack = [];
+        let historyIndex = -1;
+
+        function saveState() {
+            // Strip selection state before saving
+            if(selectedEl) selectedEl.classList.remove('selected');
+            
+            const state = [];
+            canvas.querySelectorAll('.ui-element').forEach(el => {
+                state.push({
+                    tag: el.tagName,
+                    type: el.dataset.type,
+                    html: el.innerHTML,
+                    cssText: el.style.cssText,
+                    dataset: JSON.parse(JSON.stringify(el.dataset)),
+                    src: el.src,
+                    placeholder: el.placeholder,
+                    typeAttr: el.type
+                });
+            });
+
+            if(selectedEl) selectedEl.classList.add('selected');
+
+            // Truncate future history if saving a new state after undo
+            if (historyIndex < historyStack.length - 1) {
+                historyStack = historyStack.slice(0, historyIndex + 1);
+            }
+            historyStack.push(state);
+            historyIndex++;
+        }
+
+        function restoreState(state) {
+            deselectElement({ target: canvas.parentElement });
+            canvas.querySelectorAll('.ui-element').forEach(e => e.remove());
+            
+            state.forEach(data => {
+                const el = document.createElement(data.tag);
+                el.className = 'ui-element';
+                el.innerHTML = data.html;
+                el.style.cssText = data.cssText;
+                
+                Object.keys(data.dataset).forEach(key => el.dataset[key] = data.dataset[key]);
+                
+                if(data.src) el.src = data.src;
+                if(data.placeholder) el.placeholder = data.placeholder;
+                if(data.typeAttr) el.type = data.typeAttr;
+
+                // Reattach handles/events
+                const handle = el.querySelector('.resize-handle');
+                canvas.appendChild(el);
+                attachEvents(el, handle);
+            });
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                restoreState(historyStack[historyIndex]);
+            } else if (historyIndex === 0) {
+                historyIndex = -1;
+                restoreState([]);
+            }
+        }
+
+        function redo() {
+            if (historyIndex < historyStack.length - 1) {
+                historyIndex++;
+                restoreState(historyStack[historyIndex]);
+            }
+        }
+
+        // Initialize empty state
+        saveState();
 
         // --- GLOBAL ACTIONS ---
         function clearCanvas() {
             if(confirm("Clear the entire canvas?")) {
-                canvas.innerHTML = '';
+                canvas.querySelectorAll('.ui-element').forEach(e => e.remove());
                 deselectElement({ target: canvas.parentElement });
+                saveState();
             }
         }
 
+        function updateZoom() {
+            scale = parseFloat(document.getElementById('zoom-slider').value);
+            canvas.style.transform = `scale(${scale})`;
+            document.getElementById('zoom-val').innerText = Math.round(scale * 100) + '%';
+        }
+
         // --- ADD ELEMENTS ---
-        function addElement(tag, type) {
+        function createBaseElement(tag, type) {
             const el = document.createElement(tag);
             el.className = 'ui-element';
             el.dataset.type = type;
             el.dataset.rotation = "0";
+            el.dataset.bgType = "solid";
             
-            // Default styling based on type
+            el.style.position = 'absolute';
             el.style.top = '100px'; el.style.left = '100px'; el.style.zIndex = zIndexCounter++;
             el.style.fontFamily = "'Inter', sans-serif"; el.style.fontSize = '16px';
-            
+            el.style.boxSizing = 'border-box';
+            return el;
+        }
+
+        function addElement(tag, type, internal = false) {
+            const el = createBaseElement(tag, type);
             let innerText = '';
 
             if (type === 'container') {
-                el.style.width = '200px'; el.style.height = '200px'; el.style.background = '#6366f1';
+                el.style.width = '200px'; el.style.height = '200px'; el.style.backgroundColor = '#6366f1';
                 innerText = 'Container';
             } else if (type === 'card') {
-                el.style.width = '300px'; el.style.height = '150px'; el.style.background = '#27272a';
+                el.style.width = '300px'; el.style.height = '150px'; el.style.backgroundColor = '#27272a';
                 el.style.borderRadius = '12px'; el.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
-                el.style.color = 'white'; innerText = 'Card Element';
+                el.style.color = 'white'; el.style.border = '1px solid #3f3f46'; innerText = 'Card Element';
             } else if (type === 'button') {
-                el.style.width = '120px'; el.style.height = '45px'; el.style.background = '#8b5cf6';
-                el.style.border = 'none'; el.style.borderRadius = '8px'; el.style.color = 'white';
-                el.style.display = 'flex'; el.style.alignItems = 'center'; el.style.justifyContent = 'center';
+                el.style.width = '120px'; el.style.height = '45px'; el.style.backgroundColor = '#8b5cf6';
+                el.style.borderRadius = '8px'; el.style.color = 'white'; el.style.fontWeight = '500';
                 innerText = 'Button';
             } else if (type === 'text') {
-                el.style.width = 'max-content'; el.style.height = 'max-content'; el.style.fontSize = '32px';
-                el.style.fontWeight = 'bold'; el.style.color = '#ffffff'; innerText = 'Editable Text';
+                el.style.width = '200px'; el.style.height = '40px'; el.style.fontSize = '32px';
+                el.style.fontWeight = 'bold'; el.style.color = '#ffffff'; el.style.backgroundColor = 'transparent';
+                innerText = 'Editable Text';
             } else if (type === 'image') {
-                const url = prompt("Enter Image URL:", "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=200&auto=format&fit=crop");
-                if(!url) return;
-                el.src = url; el.style.width = '200px'; el.style.height = 'auto'; el.style.borderRadius = '8px';
+                el.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop";
+                el.style.width = '200px'; el.style.height = '200px'; el.style.borderRadius = '8px';
                 el.style.objectFit = 'cover'; el.draggable = false;
             } else if (type === 'input') {
                 el.type = 'text'; el.placeholder = 'Input Field...';
                 el.style.width = '200px'; el.style.height = '45px'; el.style.borderRadius = '8px';
-                el.style.border = '1px solid #52525b'; el.style.background = '#18181b'; el.style.color = 'white';
+                el.style.border = '1px solid #52525b'; el.style.backgroundColor = '#18181b'; el.style.color = 'white';
                 el.style.padding = '0 15px'; el.style.outline = 'none';
+            } else if (type === 'avatar') {
+                el.style.width = '60px'; el.style.height = '60px'; el.style.borderRadius = '50%';
+                el.style.backgroundImage = "url('https://i.pravatar.cc/150?img=32')"; el.style.backgroundColor = '#52525b';
+                el.style.border = '2px solid white';
+            } else if (type === 'badge') {
+                el.style.width = '80px'; el.style.height = '24px'; el.style.backgroundColor = '#10b981';
+                el.style.borderRadius = '12px'; el.style.color = 'white'; el.style.fontSize = '12px';
+                el.style.fontWeight = 'bold'; innerText = 'NEW';
+            } else if (type === 'progress') {
+                el.style.width = '200px'; el.style.height = '8px'; el.style.backgroundColor = '#3f3f46';
+                el.style.borderRadius = '4px'; 
+                el.style.backgroundImage = 'linear-gradient(90deg, #6366f1 50%, transparent 50%)';
+            } else if (type === 'divider') {
+                el.style.width = '200px'; el.style.height = '2px'; el.style.backgroundColor = '#3f3f46';
             }
 
-            if(tag !== 'img' && tag !== 'input') {
+            if(tag !== 'img' && tag !== 'input' && type !== 'avatar' && type !== 'progress' && type !== 'divider') {
                 const textSpan = document.createElement('span');
                 textSpan.className = 'text-content'; textSpan.innerText = innerText;
                 el.appendChild(textSpan);
@@ -418,18 +533,74 @@
 
             canvas.appendChild(el);
             attachEvents(el, handle);
-            selectElement({ target: el, stopPropagation: () => {} });
+            if(!internal) { selectElement({ target: el, stopPropagation: () => {} }); saveState(); }
+            return el;
+        }
+
+        // --- TEMPLATES ---
+        function loadTemplate(type) {
+            if(type === 'login') {
+                const card = addElement('div', 'card', true);
+                card.style.width = '350px'; card.style.height = '400px'; card.style.left = '200px'; card.style.top = '100px';
+                
+                const title = addElement('div', 'text', true);
+                title.querySelector('.text-content').innerText = "Welcome Back"; title.style.fontSize = '24px';
+                title.style.width = '300px'; title.style.left = '225px'; title.style.top = '130px';
+                
+                const email = addElement('input', 'input', true);
+                email.placeholder = 'Email Address'; email.style.width = '300px'; email.style.left = '225px'; email.style.top = '200px';
+                
+                const pass = addElement('input', 'input', true);
+                pass.placeholder = 'Password'; pass.type = 'password'; pass.style.width = '300px'; pass.style.left = '225px'; pass.style.top = '260px';
+                
+                const btn = addElement('button', 'button', true);
+                btn.querySelector('.text-content').innerText = "Login"; btn.style.width = '300px'; btn.style.left = '225px'; btn.style.top = '330px';
+            } 
+            else if (type === 'pricing') {
+                const card = addElement('div', 'card', true);
+                card.style.width = '300px'; card.style.height = '450px'; card.style.left = '300px'; card.style.top = '100px';
+                card.style.border = '2px solid #8b5cf6';
+                
+                const badge = addElement('div', 'badge', true);
+                badge.querySelector('.text-content').innerText = "PRO"; badge.style.left = '400px'; badge.style.top = '85px';
+                badge.style.backgroundColor = '#8b5cf6';
+                
+                const title = addElement('div', 'text', true);
+                title.querySelector('.text-content').innerText = "$29 / mo"; title.style.fontSize = '36px';
+                title.style.width = '250px'; title.style.left = '325px'; title.style.top = '150px';
+                
+                const desc = addElement('div', 'text', true);
+                desc.querySelector('.text-content').innerText = "Access to all pro features."; desc.style.fontSize = '14px'; desc.style.color = '#a1a1aa';
+                desc.style.width = '250px'; desc.style.left = '325px'; desc.style.top = '210px';
+                
+                const btn = addElement('button', 'button', true);
+                btn.querySelector('.text-content').innerText = "Upgrade Now"; btn.style.width = '250px'; btn.style.left = '325px'; btn.style.top = '400px';
+            }
+            saveState();
         }
 
         function attachEvents(el, handle) {
             el.addEventListener('mousedown', initDrag);
             handle.addEventListener('mousedown', initResize);
             el.addEventListener('click', selectElement);
+            el.addEventListener('contextmenu', showContextMenu);
         }
+
+        // --- CONTEXT MENU ---
+        const contextMenu = document.getElementById('context-menu');
+        function showContextMenu(e) {
+            e.preventDefault();
+            selectElement(e);
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = e.clientX + 'px';
+            contextMenu.style.top = e.clientY + 'px';
+        }
+        function hideContextMenu() { contextMenu.style.display = 'none'; }
+        document.addEventListener('click', hideContextMenu);
 
         // --- SELECTION & PROPERTIES ---
         function selectElement(e) {
-            e.stopPropagation();
+            if (e.stopPropagation) e.stopPropagation();
             if (e.target.classList.contains('resize-handle')) return;
             
             if (selectedEl) selectedEl.classList.remove('selected');
@@ -448,16 +619,15 @@
                 selectedEl = null;
                 propertiesPanel.classList.remove('active');
                 emptyState.style.display = 'flex';
+                hideContextMenu();
             }
         }
 
         function rgbToHex(rgb) {
             if(!rgb || rgb === 'rgba(0, 0, 0, 0)' || rgb === 'transparent') return '#ffffff';
+            if(rgb.startsWith('#')) return rgb;
             let a = rgb.split("(")[1].split(")")[0].split(",");
-            return "#" + a.map(x => {
-                x = parseInt(x).toString(16);
-                return (x.length == 1) ? "0"+x : x;
-            }).slice(0,3).join("");
+            return "#" + a.map(x => { x = parseInt(x).toString(16); return (x.length == 1) ? "0"+x : x; }).slice(0,3).join("");
         }
 
         function loadProperties() {
@@ -476,11 +646,30 @@
             if(textSpan) document.getElementById('prop-text').value = textSpan.innerText;
             if(selectedEl.tagName === 'INPUT') document.getElementById('prop-text').value = selectedEl.placeholder;
 
-            // Appearance
-            const bgColor = rgbToHex(styles.backgroundColor);
-            document.getElementById('prop-bg').value = bgColor;
-            document.getElementById('bg-swatch').style.background = bgColor;
-            document.getElementById('bg-hex').innerText = bgColor;
+            // Background / Gradients
+            const bgType = selectedEl.dataset.bgType || 'solid';
+            document.getElementById('bg-type').value = bgType;
+            toggleBackgroundType();
+
+            if (bgType === 'solid') {
+                const bgColor = rgbToHex(styles.backgroundColor);
+                document.getElementById('prop-bg').value = bgColor;
+                document.getElementById('bg-swatch').style.background = bgColor;
+                document.getElementById('bg-hex').innerText = bgColor;
+            } else {
+                const bgImage = styles.backgroundImage;
+                // Parse linear-gradient(90deg, rgb(255, 0, 0), rgb(0, 255, 0)) loosely
+                const match = bgImage.match(/linear-gradient\(([^,]+),\s*(rgb[^)]+\)|#[^,]+),\s*(rgb[^)]+\)|#[^)]+)\)/);
+                if (match) {
+                    const angle = parseInt(match[1]) || 90;
+                    const c1 = rgbToHex(match[2]);
+                    const c2 = rgbToHex(match[3]);
+                    document.getElementById('prop-angle').value = angle;
+                    document.getElementById('angle-val').innerText = angle + '°';
+                    document.getElementById('prop-bg').value = c1; document.getElementById('bg-swatch').style.background = c1; document.getElementById('bg-hex').innerText = c1;
+                    document.getElementById('prop-bg2').value = c2; document.getElementById('bg-swatch2').style.background = c2; document.getElementById('bg-hex2').innerText = c2;
+                }
+            }
 
             const opacity = Math.round(parseFloat(styles.opacity) * 100) || 100;
             document.getElementById('prop-opacity').value = opacity;
@@ -493,8 +682,8 @@
             document.getElementById('prop-rotation').value = selectedEl.dataset.rotation || 0;
             document.getElementById('rotation-val').innerText = (selectedEl.dataset.rotation || 0) + '°';
 
-            // Typography (Hide for images)
-            document.getElementById('typography-panel').style.display = selectedEl.tagName === 'IMG' ? 'none' : 'block';
+            // Typography
+            document.getElementById('typography-panel').style.display = (selectedEl.tagName === 'IMG' || selectedEl.dataset.type === 'progress' || selectedEl.dataset.type === 'divider') ? 'none' : 'block';
             if(selectedEl.tagName !== 'IMG') {
                 const color = rgbToHex(styles.color);
                 document.getElementById('prop-color').value = color;
@@ -504,6 +693,33 @@
                 const fontSize = parseInt(styles.fontSize) || 16;
                 document.getElementById('prop-font-size').value = fontSize;
                 document.getElementById('font-val').innerText = fontSize + 'px';
+            }
+        }
+
+        function toggleBackgroundType() {
+            const type = document.getElementById('bg-type').value;
+            document.getElementById('gradient-controls').style.display = type === 'gradient' ? 'block' : 'none';
+            if(selectedEl) selectedEl.dataset.bgType = type;
+            updateBackground();
+        }
+
+        function updateBackground() {
+            if(!selectedEl) return;
+            const type = document.getElementById('bg-type').value;
+            const c1 = document.getElementById('prop-bg').value;
+            
+            document.getElementById('bg-swatch').style.background = c1;
+            document.getElementById('bg-hex').innerText = c1;
+
+            if (type === 'solid') {
+                selectedEl.style.backgroundImage = 'none';
+                selectedEl.style.backgroundColor = c1;
+            } else {
+                const c2 = document.getElementById('prop-bg2').value;
+                const angle = document.getElementById('prop-angle').value;
+                document.getElementById('bg-swatch2').style.background = c2;
+                document.getElementById('bg-hex2').innerText = c2;
+                selectedEl.style.backgroundImage = `linear-gradient(${angle}deg, ${c1}, ${c2})`;
             }
         }
 
@@ -547,11 +763,9 @@
             if(!selectedEl) return;
             const color = document.getElementById('prop-border-color').value;
             const width = document.getElementById('prop-border-width').value;
-            
             document.getElementById('border-swatch').style.background = color;
             document.getElementById('border-hex').innerText = color;
             document.getElementById('border-val').innerText = width + 'px';
-
             selectedEl.style.border = width > 0 ? `${width}px solid ${color}` : 'none';
         }
 
@@ -565,10 +779,11 @@
             if(!selectedEl) return;
             const current = parseInt(window.getComputedStyle(selectedEl).zIndex) || 1;
             selectedEl.style.zIndex = current + dir;
+            saveState();
         }
 
         function deleteSelected() {
-            if(selectedEl) { selectedEl.remove(); deselectElement({ target: canvas.parentElement }); }
+            if(selectedEl) { selectedEl.remove(); deselectElement({ target: canvas.parentElement }); saveState(); }
         }
 
         function duplicateElement() {
@@ -582,9 +797,10 @@
             canvas.appendChild(clone);
             attachEvents(clone, handle);
             selectElement({ target: clone, stopPropagation: () => {} });
+            saveState();
         }
 
-        // --- DRAG & RESIZE ---
+        // --- DRAG, RESIZE & SMART GUIDES ---
         let isDragging = false, isResizing = false;
         let startX, startY, startLeft, startTop, startW, startH;
 
@@ -593,24 +809,57 @@
         function initDrag(e) {
             if (e.target.classList.contains('resize-handle')) return;
             isDragging = true; selectedEl = e.target.closest('.ui-element');
-            startX = e.clientX; startY = e.clientY;
+            startX = e.clientX / scale; startY = e.clientY / scale;
             startLeft = parseInt(selectedEl.style.left) || 0; startTop = parseInt(selectedEl.style.top) || 0;
             document.addEventListener('mousemove', doDrag); document.addEventListener('mouseup', stopAction);
         }
 
         function doDrag(e) {
             if (!isDragging) return;
-            const snap = getSnap();
-            let nx = startLeft + (e.clientX - startX); let ny = startTop + (e.clientY - startY);
-            nx = Math.round(nx / snap) * snap; ny = Math.round(ny / snap) * snap;
+            let nx = startLeft + ((e.clientX / scale) - startX); 
+            let ny = startTop + ((e.clientY / scale) - startY);
             
+            // Smart Guides Logic
+            const snapDist = 5;
+            let snappedX = false, snappedY = false;
+            let ew = parseInt(selectedEl.style.width);
+            let eh = parseInt(selectedEl.style.height);
+            let ecx = nx + ew/2, ecy = ny + eh/2;
+            
+            guideV.style.opacity = 0; guideH.style.opacity = 0;
+
+            const others = Array.from(canvas.querySelectorAll('.ui-element')).filter(el => el !== selectedEl);
+            for(let other of others) {
+                let ox = parseInt(other.style.left), oy = parseInt(other.style.top);
+                let ow = parseInt(other.style.width), oh = parseInt(other.style.height);
+                let ocx = ox + ow/2, ocy = oy + oh/2;
+
+                // Vertical Snapping (X-axis)
+                if(Math.abs(nx - ox) < snapDist) { nx = ox; snappedX = true; guideV.style.left = nx+'px'; }
+                else if(Math.abs((nx+ew) - (ox+ow)) < snapDist) { nx = ox+ow-ew; snappedX = true; guideV.style.left = (nx+ew)+'px'; }
+                else if(Math.abs(ecx - ocx) < snapDist) { nx = ocx - ew/2; snappedX = true; guideV.style.left = ocx+'px'; }
+
+                // Horizontal Snapping (Y-axis)
+                if(Math.abs(ny - oy) < snapDist) { ny = oy; snappedY = true; guideH.style.top = ny+'px'; }
+                else if(Math.abs((ny+eh) - (oy+oh)) < snapDist) { ny = oy+oh-eh; snappedY = true; guideH.style.top = (ny+eh)+'px'; }
+                else if(Math.abs(ecy - ocy) < snapDist) { ny = ocy - eh/2; snappedY = true; guideH.style.top = ocy+'px'; }
+            }
+
+            if(snappedX) guideV.style.opacity = 1;
+            if(snappedY) guideH.style.opacity = 1;
+
+            if(!snappedX && !snappedY) {
+                const snap = getSnap();
+                nx = Math.round(nx / snap) * snap; ny = Math.round(ny / snap) * snap;
+            }
+
             selectedEl.style.left = nx + 'px'; selectedEl.style.top = ny + 'px';
             document.getElementById('prop-x').value = nx; document.getElementById('prop-y').value = ny;
         }
 
         function initResize(e) {
             e.stopPropagation(); isResizing = true; selectedEl = e.target.closest('.ui-element');
-            startX = e.clientX; startY = e.clientY;
+            startX = e.clientX / scale; startY = e.clientY / scale;
             startW = parseInt(window.getComputedStyle(selectedEl).width); startH = parseInt(window.getComputedStyle(selectedEl).height);
             document.addEventListener('mousemove', doResize); document.addEventListener('mouseup', stopAction);
         }
@@ -618,7 +867,8 @@
         function doResize(e) {
             if (!isResizing) return;
             const snap = getSnap();
-            let nw = Math.max(20, startW + (e.clientX - startX)); let nh = Math.max(20, startH + (e.clientY - startY));
+            let nw = Math.max(10, startW + ((e.clientX / scale) - startX)); 
+            let nh = Math.max(10, startH + ((e.clientY / scale) - startY));
             nw = Math.round(nw / snap) * snap; nh = Math.round(nh / snap) * snap;
 
             selectedEl.style.width = nw + 'px'; selectedEl.style.height = nh + 'px';
@@ -626,37 +876,50 @@
         }
 
         function stopAction() {
+            if (isDragging || isResizing) saveState();
             isDragging = false; isResizing = false;
+            guideV.style.opacity = 0; guideH.style.opacity = 0;
             document.removeEventListener('mousemove', doDrag); document.removeEventListener('mousemove', doResize);
             document.removeEventListener('mouseup', stopAction);
         }
 
-        // --- EXPORT LOGIC ---
+        // --- ENHANCED EXPORT LOGIC ---
         function exportCode() {
             if(selectedEl) selectedEl.classList.remove('selected');
             
-            const wrapper = document.createElement('div');
-            wrapper.style.position = 'relative';
-            wrapper.style.width = '100%';
-            wrapper.style.height = '100vh';
-            wrapper.style.backgroundColor = '#131316';
-            wrapper.style.overflow = 'hidden';
+            let cssClasses = '';
+            let htmlBody = `<div class="ui-canvas">\n`;
 
-            const cloneCanvas = canvas.cloneNode(true);
-            
-            // Clean up internal editor classes and handles
-            cloneCanvas.querySelectorAll('.ui-element').forEach(el => {
-                el.classList.remove('ui-element', 'selected');
-                el.removeAttribute('data-type');
-                el.removeAttribute('data-rotation');
-                const handle = el.querySelector('.resize-handle');
-                if(handle) handle.remove();
+            const elements = canvas.querySelectorAll('.ui-element');
+            elements.forEach((el, index) => {
+                const clsName = `el-${index + 1}`;
                 
-                // Fix absolute positions for export
-                el.style.position = 'absolute';
+                // Extract clean styles
+                let rawStyles = el.style.cssText.split(';').map(s => s.trim()).filter(s => s);
+                let cleanStyles = rawStyles.filter(s => !s.startsWith('outline') && !s.startsWith('z-index: 999'));
+                
+                cssClasses += `        .${clsName} {\n`;
+                cleanStyles.forEach(style => {
+                    cssClasses += `            ${style};\n`;
+                });
+                cssClasses += `        }\n`;
+
+                // Generate Clean HTML
+                const tag = el.tagName.toLowerCase();
+                let innerText = '';
+                const textSpan = el.querySelector('.text-content');
+                if(textSpan) innerText = textSpan.innerText;
+
+                if (tag === 'img') {
+                    htmlBody += `    <img class="${clsName}" src="${el.src}" alt="UI Element">\n`;
+                } else if (tag === 'input') {
+                    htmlBody += `    <input class="${clsName}" type="${el.type}" placeholder="${el.placeholder}">\n`;
+                } else {
+                    htmlBody += `    <${tag} class="${clsName}">${innerText}</${tag}>\n`;
+                }
             });
 
-            wrapper.appendChild(cloneCanvas);
+            htmlBody += `</div>`;
 
             const finalHTML = `<!DOCTYPE html>
 <html lang="en">
@@ -666,12 +929,15 @@
     <title>Exported UI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@400;700&family=Pacifico&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; background: #131316; }
-        .text-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+        body { margin: 0; padding: 0; background: #131316; font-family: 'Inter', sans-serif; overflow: hidden; }
+        .ui-canvas { position: relative; width: 100vw; height: 100vh; }
+        
+        /* Auto-generated Classes */
+${cssClasses}
     </style>
 </head>
 <body>
-${wrapper.outerHTML}
+${htmlBody}
 </body>
 </html>`;
 
@@ -692,8 +958,10 @@ ${wrapper.outerHTML}
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if(e.key === 'Delete' || e.key === 'Backspace') {
-                if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') deleteSelected();
+            if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                if(e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
+                if((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+                if((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); redo(); }
             }
         });
     </script>
